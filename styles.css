@@ -123,7 +123,6 @@ nav a:hover {
         max-height: 0;
         overflow: hidden;
         transition: max-height 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     nav.active {
@@ -242,12 +241,24 @@ nav a:hover {
         min-height: 400px;
     }
 
+    .hero h1 {
+        font-size: 2rem;
+    }
+
     .hero h2 {
         font-size: 2rem;
     }
 
     .hero p {
         font-size: 1rem;
+    }
+
+    .cta-button,
+    .webpay-button {
+        display: block;
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 1rem;
     }
 }
 
