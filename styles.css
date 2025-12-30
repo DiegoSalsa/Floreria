@@ -443,6 +443,7 @@ nav a:hover {
     background: linear-gradient(135deg, var(--moss-green) 0%, rgba(75, 97, 69, 0.9) 100%);
     padding: 4rem 2rem;
     margin-top: 4rem;
+    margin-bottom: 0;
 }
 
 .contact-container {
@@ -450,16 +451,16 @@ nav a:hover {
     margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2.5rem;
+    gap: 2rem;
 }
 
 .contact-item {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(241, 242, 233, 0.1);
     padding: 2rem;
     border-radius: 12px;
     text-align: center;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(241, 242, 233, 0.2);
     transition: all 0.3s ease;
 }
 
@@ -494,20 +495,20 @@ nav a:hover {
 .location-link,
 .contact-link {
     display: inline-block;
-    color: var(--moss-green);
+    color: var(--cream-white);
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
     padding: 0.5rem 1rem;
     border-radius: 20px;
     border: 1px solid var(--cream-white);
-    background-color: var(--cream-white);
+    background-color: transparent;
 }
 
 .location-link:hover,
 .contact-link:hover {
-    background-color: transparent;
-    color: var(--cream-white);
+    background-color: var(--cream-white);
+    color: var(--moss-green);
 }
 
 @media (max-width: 768px) {
@@ -669,21 +670,64 @@ nav a:hover {
     font-size: 0.85rem;
 }
 
+footer {
+    background-color: var(--moss-green);
+    color: var(--cream-white);
+    padding: 3rem 2rem 1rem;
+    margin-top: 0;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    margin-bottom: 2rem;
+}
+
+.footer-section h5 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: var(--cream-white);
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.footer-section p {
+    color: rgba(241, 242, 233, 0.85);
+    line-height: 1.6;
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section ul li {
+    margin-bottom: 0.75rem;
+}
+
+.footer-section a {
+    color: var(--cream-white);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-section a:hover {
+    color: #D4AF37;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(241, 242, 233, 0.2);
+    color: rgba(241, 242, 233, 0.75);
+}
+
 @media (max-width: 768px) {
-    .footer-container {
+    .footer-content {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-
-    .whatsapp-button {
-        bottom: 1rem;
-        right: 1rem;
-        width: 50px;
-        height: 50px;
-    }
-
-    .whatsapp-button i {
-        font-size: 1.5rem;
+        gap: 2rem;
     }
 }
 
