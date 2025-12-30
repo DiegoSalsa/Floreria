@@ -1,6 +1,6 @@
 // Configuración
-const PHONE_NUMBER = '56968465270'; // Reemplaza con tu número de WhatsApp (sin símbolos ni espacios)
-const BUSINESS_NAME = 'El Jardín De Alejandrino';
+const PHONE_NUMBER = '56996744579'; // Reemplaza con tu número de WhatsApp (sin símbolos ni espacios)
+const BUSINESS_NAME = 'Floreria Wildgarden';
 
 // Mobile Menu Toggle
 const hamburger = document.getElementById('hamburger');
@@ -37,9 +37,9 @@ window.addEventListener('scroll', () => {
 });
 
 // WhatsApp Integration
-const buyButtons = document.querySelectorAll('.buy-button');
+const whatsappButtons = document.querySelectorAll('.whatsapp-btn');
 
-buyButtons.forEach(button => {
+whatsappButtons.forEach(button => {
     button.addEventListener('click', (e) => {
         e.preventDefault();
         const productName = button.getAttribute('data-product');

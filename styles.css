@@ -17,18 +17,18 @@ body {
 
 /* Color Variables */
 :root {
-    --pink-pastel: #FCE7F3;
+    --moss-green: #1B4332;
+    --cream-white: #F1F2E9;
     --white: #FFFFFF;
-    --forest-green: #166534;
     --dark-gray: #333333;
     --light-gray: #F5F5F5;
-    --accent-green: #15803D;
+    --accent-green: #0D2818;
 }
 
 /* Header & Navigation */
 header {
-    background-color: var(--white);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    background-color: var(--moss-green);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -50,15 +50,15 @@ header {
 }
 
 .logo h1 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cinzel', serif;
     font-size: 1.8rem;
-    color: var(--forest-green);
+    color: var(--cream-white);
     font-weight: 700;
 }
 
 .logo i {
     font-size: 2rem;
-    color: #FF69B4;
+    color: var(--cream-white);
 }
 
 nav {
@@ -68,14 +68,14 @@ nav {
 
 nav a {
     text-decoration: none;
-    color: var(--dark-gray);
+    color: var(--cream-white);
     font-weight: 500;
     transition: color 0.3s ease;
     font-size: 1rem;
 }
 
 nav a:hover {
-    color: var(--forest-green);
+    color: #D4AF37;
 }
 
 .hamburger {
@@ -88,7 +88,7 @@ nav a:hover {
 .hamburger span {
     width: 25px;
     height: 3px;
-    background-color: var(--forest-green);
+    background-color: var(--cream-white);
     border-radius: 2px;
     transition: all 0.3s ease;
 }
@@ -116,7 +116,7 @@ nav a:hover {
         top: 70px;
         left: 0;
         right: 0;
-        background-color: var(--white);
+        background-color: var(--moss-green);
         flex-direction: column;
         gap: 0;
         padding: 1rem 2rem;
@@ -132,7 +132,8 @@ nav a:hover {
 
     nav a {
         padding: 0.75rem 0;
-        border-bottom: 1px solid var(--light-gray);
+        border-bottom: 1px solid rgba(241, 242, 233, 0.2);
+        color: var(--cream-white);
     }
 
     nav a:last-child {
@@ -146,8 +147,8 @@ nav a:hover {
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(135deg, var(--pink-pastel) 0%, rgba(255, 192, 203, 0.2) 100%),
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><pattern id="flowers" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="30" fill="%23FFB6D9" opacity="0.3"/><circle cx="100" cy="80" r="25" fill="%2338A169" opacity="0.2"/><circle cx="150" cy="40" r="20" fill="%23FFD4E5" opacity="0.2"/></pattern></defs><rect width="1200" height="600" fill="white"/><rect width="1200" height="600" fill="url(%23flowers)"/></svg>');
+    background: linear-gradient(135deg, var(--moss-green) 0%, rgba(27, 67, 50, 0.95) 100%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><pattern id="flowers" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="30" fill="%23F1F2E9" opacity="0.1"/><circle cx="100" cy="80" r="25" fill="%23F1F2E9" opacity="0.08"/><circle cx="150" cy="40" r="20" fill="%23F1F2E9" opacity="0.06"/></pattern></defs><rect width="1200" height="600" fill="%231B4332"/><rect width="1200" height="600" fill="url(%23flowers)"/></svg>');
     background-attachment: fixed;
     min-height: 600px;
     display: flex;
@@ -166,8 +167,8 @@ nav a:hover {
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 20% 50%, rgba(22, 101, 52, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(252, 231, 243, 0.3) 0%, transparent 50%);
+    background: radial-gradient(circle at 20% 50%, rgba(241, 242, 233, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(241, 242, 233, 0.03) 0%, transparent 50%);
     pointer-events: none;
 }
 
@@ -178,40 +179,62 @@ nav a:hover {
 }
 
 .hero h1 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cinzel', serif;
     font-size: 3.5rem;
-    color: var(--forest-green);
+    color: var(--cream-white);
     margin-bottom: 1rem;
     font-weight: 700;
-    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .hero p {
     font-size: 1.2rem;
-    color: #555;
+    color: rgba(241, 242, 233, 0.9);
     margin-bottom: 2rem;
     font-weight: 500;
 }
 
 .cta-button {
     display: inline-block;
-    background-color: var(--forest-green);
-    color: var(--white);
+    background-color: var(--cream-white);
+    color: var(--moss-green);
     padding: 1rem 2.5rem;
     border-radius: 50px;
     text-decoration: none;
     font-weight: 600;
     font-size: 1.1rem;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(22, 101, 52, 0.3);
+    box-shadow: 0 4px 15px rgba(241, 242, 233, 0.3);
+    border: none;
+    cursor: pointer;
+    margin-right: 1rem;
+}
+
+.cta-button:hover {
+    background-color: #E8E9DE;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(241, 242, 233, 0.4);
+}
+
+.webpay-button {
+    display: inline-block;
+    background-color: var(--cream-white);
+    color: var(--moss-green);
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(241, 242, 233, 0.3);
     border: none;
     cursor: pointer;
 }
 
-.cta-button:hover {
-    background-color: var(--accent-green);
+.webpay-button:hover {
+    background-color: #E8E9DE;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(22, 101, 52, 0.4);
+    box-shadow: 0 6px 20px rgba(241, 242, 233, 0.4);
 }
 
 @media (max-width: 768px) {
@@ -236,10 +259,10 @@ nav a:hover {
 }
 
 .catalog h2 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cinzel', serif;
     font-size: 2.5rem;
     text-align: center;
-    color: var(--forest-green);
+    color: var(--moss-green);
     margin-bottom: 0.5rem;
     font-weight: 700;
 }
@@ -266,6 +289,7 @@ nav a:hover {
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
+    height: 620px;
 }
 
 .product-card:hover {
@@ -276,7 +300,7 @@ nav a:hover {
 .product-image {
     width: 100%;
     height: 250px;
-    background: linear-gradient(135deg, var(--pink-pastel), rgba(252, 231, 243, 0.5));
+    background: linear-gradient(135deg, var(--moss-green), rgba(27, 67, 50, 0.7));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -304,15 +328,15 @@ nav a:hover {
 
 .product-content {
     padding: 2rem;
-    flex-grow: 1;
     display: flex;
     flex-direction: column;
+    flex: 1;
 }
 
 .product-content h3 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cinzel', serif;
     font-size: 1.5rem;
-    color: var(--forest-green);
+    color: var(--moss-green);
     margin-bottom: 0.5rem;
     font-weight: 700;
 }
@@ -320,38 +344,68 @@ nav a:hover {
 .product-content p {
     color: #666;
     font-size: 0.95rem;
-    margin-bottom: 1.5rem;
-    flex-grow: 1;
+    margin-bottom: 1rem;
+    height: 80px;
+    overflow: hidden;
 }
 
 .product-footer {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: auto;
 }
 
 .price {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cinzel', serif;
     font-size: 1.8rem;
-    color: var(--forest-green);
+    color: var(--moss-green);
     font-weight: 700;
+    text-align: center;
+}
+
+.product-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
 .buy-button {
-    background-color: var(--forest-green);
-    color: var(--white);
     border: none;
-    padding: 0.75rem 1.5rem;
+    padding: 0.85rem 1.5rem;
     border-radius: 25px;
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s ease;
     font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    white-space: nowrap;
 }
 
-.buy-button:hover {
-    background-color: var(--accent-green);
-    transform: scale(1.05);
+.whatsapp-btn {
+    background-color: #25D366;
+    color: var(--white);
+}
+
+.whatsapp-btn:hover {
+    background-color: #20BA5A;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+}
+
+.uber-btn {
+    background-color: #353535;
+    color: var(--white);
+}
+
+.uber-btn:hover {
+    background-color: #1a1a1a;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(53, 53, 53, 0.3);
 }
 
 @media (max-width: 768px) {
@@ -367,6 +421,15 @@ nav a:hover {
     .product-image {
         height: 200px;
     }
+
+    .product-card {
+        height: 550px;
+    }
+
+    .product-content {
+        height: auto;
+        flex: 1;
+    }
 }
 
 @media (max-width: 992px) and (min-width: 769px) {
@@ -377,7 +440,7 @@ nav a:hover {
 
 /* Contact Section */
 .contact-section {
-    background: linear-gradient(135deg, var(--forest-green) 0%, rgba(22, 101, 52, 0.9) 100%);
+    background: linear-gradient(135deg, var(--moss-green) 0%, rgba(75, 97, 69, 0.9) 100%);
     padding: 4rem 2rem;
     margin-top: 4rem;
 }
@@ -401,28 +464,28 @@ nav a:hover {
 }
 
 .contact-item:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(241, 242, 233, 0.15);
     transform: translateY(-5px);
-    border-color: var(--pink-pastel);
+    border-color: var(--cream-white);
 }
 
 .contact-item i {
     font-size: 2.5rem;
-    color: var(--pink-pastel);
+    color: var(--cream-white);
     margin-bottom: 1rem;
     display: block;
 }
 
 .contact-item h4 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cinzel', serif;
     font-size: 1.5rem;
-    color: var(--white);
+    color: var(--cream-white);
     margin-bottom: 0.75rem;
     font-weight: 700;
 }
 
 .contact-item p {
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(241, 242, 233, 0.9);
     font-size: 0.95rem;
     line-height: 1.8;
     margin-bottom: 1rem;
@@ -431,19 +494,20 @@ nav a:hover {
 .location-link,
 .contact-link {
     display: inline-block;
-    color: var(--pink-pastel);
+    color: var(--moss-green);
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
     padding: 0.5rem 1rem;
     border-radius: 20px;
-    border: 1px solid var(--pink-pastel);
+    border: 1px solid var(--cream-white);
+    background-color: var(--cream-white);
 }
 
 .location-link:hover,
 .contact-link:hover {
-    background-color: var(--pink-pastel);
-    color: var(--forest-green);
+    background-color: transparent;
+    color: var(--cream-white);
 }
 
 @media (max-width: 768px) {
@@ -477,10 +541,10 @@ nav a:hover {
 }
 
 .reviews-section h2 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cinzel', serif;
     font-size: 2.5rem;
     text-align: center;
-    color: var(--forest-green);
+    color: var(--moss-green);
     margin-bottom: 0.5rem;
     font-weight: 700;
 }
@@ -533,15 +597,15 @@ nav a:hover {
 }
 
 .rating-text {
-    color: var(--forest-green);
+    color: var(--moss-green);
     font-weight: 600;
     font-size: 1.1rem;
 }
 
 .reviews-link {
     display: inline-block;
-    background-color: var(--forest-green);
-    color: var(--white);
+    background-color: var(--moss-green);
+    color: var(--cream-white);
     padding: 0.75rem 1.5rem;
     border-radius: 25px;
     text-decoration: none;
@@ -550,7 +614,7 @@ nav a:hover {
 }
 
 .reviews-link:hover {
-    background-color: var(--accent-green);
+    background-color: rgba(27, 67, 50, 0.8);
     transform: translateY(-2px);
 }
 
@@ -558,7 +622,7 @@ nav a:hover {
     background: var(--white);
     padding: 1.5rem;
     border-radius: 12px;
-    border-left: 4px solid var(--forest-green);
+    border-left: 4px solid var(--moss-green);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -646,6 +710,7 @@ nav a:hover {
 
 .product-card {
     animation: fadeInUp 0.6s ease-out;
+    height: 620px;
 }
 
 .product-card:nth-child(1) { animation-delay: 0.1s; }
