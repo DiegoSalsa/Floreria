@@ -1,6 +1,6 @@
 // Configuración
-const PHONE_NUMBER = '56988144219'; // Reemplaza con tu número de WhatsApp (sin símbolos ni espacios)
-const BUSINESS_NAME = 'Florería Jireh';
+const PHONE_NUMBER = '56968465270'; // Reemplaza con tu número de WhatsApp (sin símbolos ni espacios)
+const BUSINESS_NAME = 'El Jardín De Alejandrino';
 
 // Mobile Menu Toggle
 const hamburger = document.getElementById('hamburger');
