@@ -2,8 +2,9 @@
 require_once 'load-env.php';
 require_once 'auth-config.php';
 
-// CORS headers
-header('Access-Control-Allow-Origin: *');
+// CORS headers - Allow credentials with specific origin
+header('Access-Control-Allow-Origin: https://floreriawildgarden.vercel.app');
+header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 

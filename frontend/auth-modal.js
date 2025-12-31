@@ -39,6 +39,7 @@ async function handleLogin(e) {
     try {
         const response = await fetch('https://floreria-wildgarden.onrender.com/login.php', {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -78,6 +79,7 @@ async function handleRegister(e) {
     try {
         const response = await fetch('https://floreria-wildgarden.onrender.com/register.php', {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -112,7 +114,8 @@ async function logout(e) {
     
     try {
         const response = await fetch('https://floreria-wildgarden.onrender.com/logout.php', {
-            method: 'GET'
+            method: 'GET',
+            credentials: 'include'
         });
         
         if (response.ok) {
