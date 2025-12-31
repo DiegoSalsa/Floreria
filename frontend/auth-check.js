@@ -1,64 +1,62 @@
 /**
  * Verificar estado de autenticación del usuario
- * Actualizar la interfaz según el estado
+ * Lee datos de localStorage y actualiza UI
  */
 
 function checkAuthStatus() {
-    // Primero verificar localStorage (más rápido)
     const loggedIn = localStorage.getItem('user_logged_in') === 'true';
-    const userData = localStorage.getItem('user_data');
     
-    if (loggedIn && userData) {
-        try {
-            const user = JSON.parse(userData);
-            updateUserMenuLogged(user);
-            return;
-        } catch (e) {
-            console.error('Error parsing user data:', e);
-            localStorage.removeItem('user_logged_in');
-            localStorage.removeItem('user_data');
-        }
+    if (!loggedIn) {
+        updateUserMenuLoggedOut();
+        return;
     }
     
-    updateUserMenuLoggedOut();
+    try {
+        const userDataStr = localStorage.getItem('user_data');
+        if (!userDataStr) {
+            updateUserMenuLoggedOut();
+            return;
+        }
+        
+        const userData = JSON.parse(userDataStr);
+        updateUserMenuLogged(userData);
+    } catch (e) {
+        console.error('Error parsing user data:', e);
+        updateUserMenuLoggedOut();
+    }
 }
 
 function updateUserMenuLogged(userData) {
     // Ocultar botones de login/registro
-    const loginLinks = document.querySelectorAll('.user-dropdown a[href*="login.php"], .user-dropdown a[href*="register.php"]');
-    loginLinks.forEach(link => {
+    document.querySelectorAll('.user-dropdown a[href*="login.php"], .user-dropdown a[href*="register.php"]').forEach(link => {
         link.style.display = 'none';
     });
     
-    // Mostrar botones de admin y logout
+    // Mostrar botones de admin (si es admin) y logout
     const adminLink = document.getElementById('admin-link');
     const logoutBtn = document.getElementById('logout-btn');
     
     if (adminLink) {
-        if (userData.role === 'admin') {
-            adminLink.style.display = 'block';
-        } else {
-            adminLink.style.display = 'none';
-        }
+        adminLink.style.display = (userData.role === 'admin') ? 'block' : 'none';
     }
-    
     if (logoutBtn) {
         logoutBtn.style.display = 'block';
     }
     
-    // Cambiar el icono de usuario para mostrar nombre
+    // Actualizar nombre de usuario en el icono
     const userToggle = document.getElementById('user-toggle');
     if (userToggle) {
-        const userName = userData.name || userData.email || 'Usuario';
-        userToggle.textContent = `${userName.split(' ')[0]}`;
-        userToggle.title = userName;
+        const firstName = userData.name ? userData.name.split(' ')[0] : userData.email;
+        userToggle.innerHTML = firstName;
+        userToggle.style.fontSize = '12px';
     }
+    
+    console.log('Usuario logueado:', userData.email);
 }
 
 function updateUserMenuLoggedOut() {
     // Mostrar botones de login/registro
-    const loginLinks = document.querySelectorAll('.user-dropdown a[href*="login.php"], .user-dropdown a[href*="register.php"]');
-    loginLinks.forEach(link => {
+    document.querySelectorAll('.user-dropdown a[href*="login.php"], .user-dropdown a[href*="register.php"]').forEach(link => {
         link.style.display = 'block';
     });
     
@@ -73,14 +71,17 @@ function updateUserMenuLoggedOut() {
     const userToggle = document.getElementById('user-toggle');
     if (userToggle) {
         userToggle.innerHTML = '<i class="fas fa-user-circle"></i>';
-        userToggle.title = 'Menú de usuario';
     }
+    
+    console.log('Usuario no logueado');
 }
 
-// Verificar autenticación cuando carga la página
-document.addEventListener('DOMContentLoaded', () => {
+// Ejecutar al cargar
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkAuthStatus);
+} else {
     checkAuthStatus();
-    
-    // Re-verificar cada 10 segundos
-    setInterval(checkAuthStatus, 10000);
-});
+}
+
+// Re-verificar cada 5 segundos
+setInterval(checkAuthStatus, 5000);

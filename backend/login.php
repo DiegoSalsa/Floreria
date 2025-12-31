@@ -23,20 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = login_user($email, $password);
         
         if ($result['success']) {
-            // Crear script que guarde en localStorage antes de redirigir
-            $user_data = json_encode([
-                'email' => $result['user_email'] ?? $_SESSION['user_email'],
-                'name' => $result['user_name'] ?? $_SESSION['user_name'],
-                'role' => $result['role']
-            ]);
-            
-            $redirect_url = ($result['role'] === 'admin') ? $admin_url : $frontend_url;
-            
-            echo "<script>
-                localStorage.setItem('user_logged_in', 'true');
-                localStorage.setItem('user_data', '" . addslashes($user_data) . "');
-                window.location.href = '$redirect_url';
-            </script>";
+            // Redirigir a página de redirección que guarda en localStorage
+            header('Location: auth-redirect.php');
             exit;
         } else {
             $error = $result['error'];

@@ -4,11 +4,24 @@ require_once 'auth-config.php';
 logActivity("Usuario desconectado", 'auth');
 logout_user();
 
-// Redirigir al frontend con script que limpie localStorage
-$frontend_url = 'https://floreriawildgarden.vercel.app';
-echo "<script>
-    localStorage.removeItem('user_logged_in');
-    localStorage.removeItem('user_data');
-    window.location.href = '$frontend_url';
-</script>";
+// Redirigir a página que limpia localStorage
 ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cerrando sesión...</title>
+</head>
+<body>
+    <script>
+        // Limpiar localStorage
+        localStorage.removeItem('user_logged_in');
+        localStorage.removeItem('user_data');
+        
+        // Redirigir al frontend
+        setTimeout(function() {
+            window.location.href = 'https://floreriawildgarden.vercel.app';
+        }, 100);
+    </script>
+    <p>Cerrando sesión...</p>
+</body>
+</html>
