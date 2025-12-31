@@ -204,10 +204,9 @@ function register_user($email, $name, $password) {
         file_put_contents(USERS_DIR . "/{$user_id}.json", json_encode($user_data, JSON_PRETTY_PRINT));
     }
     
-    // Enviar email de confirmación
-    send_verification_email($email, $name, $user_data['verification_token']);
+    // NO enviar email de verificación - el usuario puede iniciar sesión inmediatamente
     
-    return ['success' => true, 'message' => 'Usuario registrado. Verifica tu email para activar la cuenta'];
+    return ['success' => true, 'message' => '¡Registro exitoso! Ya puedes iniciar sesión'];
 }
 
 /**

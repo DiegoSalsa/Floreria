@@ -4,6 +4,9 @@
  * Intégrate con la API de Transbank
  */
 
+// Cargar variables de entorno
+require_once 'load-env.php';
+
 // IMPORTANTE: Usa variables de entorno para credenciales
 define('WEBPAY_COMMERCE_CODE', getenv('WEBPAY_COMMERCE_CODE')); // Tu código de comercio
 define('WEBPAY_API_KEY', getenv('WEBPAY_API_KEY')); // Tu API Key

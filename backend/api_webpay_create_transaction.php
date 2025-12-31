@@ -14,6 +14,8 @@ try {
         throw new Exception('Método no permitido');
     }
 
+    logWebpay('=== NUEVA SOLICITUD ===', $_POST);
+
     // Obtener datos
     $amount = isset($_POST['amount']) ? intval($_POST['amount']) : 0;
     $buyEmail = isset($_POST['buyEmail']) ? sanitize($_POST['buyEmail']) : '';
@@ -22,9 +24,14 @@ try {
     $orderId = isset($_POST['orderId']) ? sanitize($_POST['orderId']) : '';
     $cartItems = isset($_POST['cartItems']) ? json_decode($_POST['cartItems'], true) : array();
 
+    // Validar que las credenciales estén cargadas
+    if (!WEBPAY_COMMERCE_CODE || !WEBPAY_API_KEY) {
+        throw new Exception('Credenciales de Webpay no configuradas. Commerce Code: ' . (WEBPAY_COMMERCE_CODE ?: 'VACÍO') . ', API Key: ' . (WEBPAY_API_KEY ? 'OK' : 'VACÍO'));
+    }
+
     // Validar datos
     if ($amount <= 0) {
-        throw new Exception('Monto inválido');
+        throw new Exception('Monto inválido: ' . $amount);
     }
 
     if (empty($buyEmail) || empty($buyerName)) {
@@ -33,7 +40,7 @@ try {
 
     // Validar email
     if (!filter_var($buyEmail, FILTER_VALIDATE_EMAIL)) {
-        throw new Exception('Email inválido');
+        throw new Exception('Email inválido: ' . $buyEmail);
     }
 
     logWebpay('Nueva solicitud de transacción', array(
@@ -60,13 +67,19 @@ try {
     logWebpay('Respuesta de Webpay', $response);
 
     // Validar respuesta
-    if (!$response['response']) {
-        throw new Exception('Error al crear la transacción: ' . ($response['error'] ?: 'Sin respuesta del servidor'));
+    if (empty($response) || !is_array($response)) {
+        throw new Exception('Error al crear la transacción: Respuesta inválida del servidor');
     }
 
-    if ($response['status'] !== 201 && $response['status'] !== 200) {
-        $errorMsg = isset($response['response']['message']) ? $response['response']['message'] : 'Error desconocido';
+    if (!isset($response['response']) || !$response['response']) {
+        $errorMsg = isset($response['error']) ? $response['error'] : 'Sin respuesta del servidor';
         throw new Exception('Error al crear la transacción: ' . $errorMsg);
+    }
+
+    if (!isset($response['status']) || ($response['status'] !== 201 && $response['status'] !== 200)) {
+        $statusCode = $response['status'] ?? 'desconocido';
+        $errorMsg = isset($response['response']['message']) ? $response['response']['message'] : 'Error desconocido';
+        throw new Exception('Error al crear la transacción [' . $statusCode . ']: ' . $errorMsg);
     }
 
     // Guardar datos de la transacción en BD (opcional pero recomendado)

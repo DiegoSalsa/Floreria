@@ -164,9 +164,14 @@ function sanitize($data) {
             <div class="alert alert-success">
                 ✅ <?php echo $success; ?>
             </div>
-            <p style="text-align: center; margin-top: 20px;">
-                <a href="login.php" style="color: #1B4332; font-weight: 600;">Ir a Login →</a>
+            <p style="text-align: center; margin-top: 20px; color: #666;">
+                Redirigiendo a login en 3 segundos...
             </p>
+            <script>
+                setTimeout(function() {
+                    window.location.href = 'https://floreria-wildgarden.onrender.com/login.php';
+                }, 3000);
+            </script>
         <?php else: ?>
         
         <form method="POST">
