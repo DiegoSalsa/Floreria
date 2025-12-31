@@ -1,8 +1,13 @@
 <?php
+require_once 'load-env.php';
 require_once 'auth-config.php';
 
+// Get frontend URL from environment or use default
+$frontend_url = getenv('FRONTEND_URL') ?: 'https://tu-vercel-domain.vercel.app';
+$backend_url = getenv('APP_URL') ?: 'https://floreria-wildgarden.onrender.com';
+
 if (is_authenticated()) {
-    header('Location: /');
+    header("Location: {$frontend_url}/");
     exit;
 }
 
@@ -19,9 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if ($result['success']) {
             if ($result['role'] === 'admin') {
-                header('Location: /admin-dashboard.php');
+                header("Location: {$backend_url}/admin-dashboard.php");
             } else {
-                header('Location: /');
+                header("Location: {$frontend_url}/");
             }
             exit;
         } else {
