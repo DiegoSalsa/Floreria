@@ -42,7 +42,6 @@ async function handleLogin(e) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            credentials: 'include',
             body: JSON.stringify({
                 email: email,
                 password: password
@@ -82,7 +81,6 @@ async function handleRegister(e) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            credentials: 'include',
             body: JSON.stringify({
                 name: name,
                 email: email,
@@ -114,8 +112,7 @@ async function logout(e) {
     
     try {
         const response = await fetch('https://floreria-wildgarden.onrender.com/logout.php', {
-            method: 'GET',
-            credentials: 'include'
+            method: 'GET'
         });
         
         if (response.ok) {

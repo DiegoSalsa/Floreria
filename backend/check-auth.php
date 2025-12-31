@@ -2,11 +2,10 @@
 require_once 'load-env.php';
 require_once 'auth-config.php';
 
-// CORS headers - especificar dominio de Vercel
-header('Access-Control-Allow-Origin: https://floreriawildgarden.vercel.app');
+// CORS headers
+header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
-header('Access-Control-Allow-Credentials: true');
 header('Content-Type: application/json');
 
 // Handle OPTIONS preflight requests - CORS requires this

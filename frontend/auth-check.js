@@ -16,7 +16,6 @@ async function checkAuthFromBackend() {
     try {
         const response = await fetch('https://floreria-wildgarden.onrender.com/check-auth.php', {
             method: 'GET',
-            credentials: 'include', // Enviar cookies
             headers: {
                 'Content-Type': 'application/json'
             }

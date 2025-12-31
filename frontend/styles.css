@@ -955,6 +955,93 @@ footer {
     animation: slideUp 0.3s ease-out;
 }
 
+/* Auth modals styling */
+#loginModal .modal-content,
+#registerModal .modal-content {
+    width: 90% !important;
+    max-width: 400px !important;
+    height: auto !important;
+    max-height: none !important;
+    border-radius: 10px !important;
+    animation: slideDown 0.3s ease-out !important;
+    padding: 30px !important;
+    margin: auto !important;
+}
+
+#loginModal .modal-content h2,
+#registerModal .modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #1B4332;
+    font-size: 24px;
+    text-align: center;
+}
+
+#loginModal .form-group,
+#registerModal .form-group {
+    margin-bottom: 15px;
+}
+
+#loginModal .form-group label,
+#registerModal .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+#loginModal .form-group input,
+#registerModal .form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+#loginModal .form-group input:focus,
+#registerModal .form-group input:focus {
+    outline: none;
+    border-color: #4B6145;
+    box-shadow: 0 0 5px rgba(75, 107, 69, 0.3);
+}
+
+#loginModal .cta-button,
+#registerModal .cta-button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+}
+
+#loginModal .close,
+#registerModal .close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    float: right;
+    line-height: 20px;
+}
+
+#loginModal .close:hover,
+#registerModal .close:hover {
+    color: #4B6145;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 .cart-modal {
     max-width: 600px;
     margin: 0 auto;
