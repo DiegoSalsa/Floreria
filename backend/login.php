@@ -3,7 +3,7 @@ require_once 'load-env.php';
 require_once 'auth-config.php';
 
 // Get frontend URL from environment or use default
-$frontend_url = getenv('FRONTEND_URL') ?: 'https://tu-vercel-domain.vercel.app';
+$frontend_url = getenv('FRONTEND_URL') ?: 'https://floreriawildgarden.vercel.app';
 $backend_url = getenv('APP_URL') ?: 'https://floreria-wildgarden.onrender.com';
 
 if (is_authenticated()) {
