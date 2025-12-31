@@ -8,6 +8,7 @@ COPY database /app/database
 
 RUN apt-get update && apt-get install -y \
     postgresql-client \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-install pdo pdo_pgsql
