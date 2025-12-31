@@ -5,7 +5,6 @@ WORKDIR /app
 COPY backend /app/backend
 COPY frontend /app/frontend
 COPY database /app/database
-COPY .env /app/.env
 
 RUN apt-get update && apt-get install -y \
     postgresql-client \
