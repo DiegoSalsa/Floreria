@@ -60,6 +60,13 @@ if (!is_dir(__DIR__ . '/../logs')) {
  */
 function logWebpay($message, $data = array()) {
     if (DEBUG_MODE) {
+        $logDir = __DIR__ . '/../logs';
+        
+        // Crear directorio de logs si no existe
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0755, true);
+        }
+        
         $timestamp = date('Y-m-d H:i:s');
         $logMessage = "[$timestamp] $message";
         
@@ -69,7 +76,7 @@ function logWebpay($message, $data = array()) {
         
         $logMessage .= "\n" . str_repeat("-", 80) . "\n";
         
-        file_put_contents(LOG_FILE, $logMessage, FILE_APPEND);
+        @file_put_contents(LOG_FILE, $logMessage, FILE_APPEND);
     }
 }
 
