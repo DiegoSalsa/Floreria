@@ -180,7 +180,7 @@ function register_user($email, $name, $password) {
         'name' => $name,
         'password_hash' => $password_hash,
         'role' => 'customer', // Por defecto cliente
-        'is_active' => false, // Requiere confirmación de email
+        'is_active' => true, // Activo automáticamente sin verificación
         'verification_token' => create_session_token(),
         'created_at' => date('Y-m-d H:i:s'),
         'updated_at' => date('Y-m-d H:i:s')
@@ -195,7 +195,7 @@ function register_user($email, $name, $password) {
         
         $username = explode('@', $email)[0];
         $role = 'customer';
-        $is_active = 0;
+        $is_active = 1;
         
         $stmt->bind_param("ssssi", $username, $email, $password_hash, $role, $is_active);
         $stmt->execute();
@@ -217,10 +217,6 @@ function login_user($email, $password) {
     
     if (!$user) {
         return ['success' => false, 'error' => 'Email o contraseña incorrectos'];
-    }
-    
-    if (!$user['is_active']) {
-        return ['success' => false, 'error' => 'Por favor verifica tu email primero'];
     }
     
     if (!verify_password($password, $user['password_hash'])) {
