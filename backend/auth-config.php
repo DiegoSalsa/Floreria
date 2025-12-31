@@ -47,16 +47,24 @@ define('MAIL_FROM_NAME', getenv('MAIL_FROM_NAME') ?: 'Floreria Wildgarden');
 // define('MAIL_PASSWORD', 'tu_password');
 
 // ============================================
-// CONFIGURACIÓN DE BASE DE DATOS (si usas MySQL)
+// CONFIGURACIÓN DE BASE DE DATOS (PostgreSQL en Render)
 // ============================================
-// En producción (Render + Railway): USE_DATABASE=true (PostgreSQL)
-// En desarrollo local: USE_DATABASE=false (JSON)
-define('USE_DATABASE', getenv('USE_DATABASE') === 'true' || getenv('USE_DATABASE') === '1');
-define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-define('DB_PORT', getenv('DB_PORT') ?: '5432');
-define('DB_USER', getenv('DB_USER') ?: 'postgres');
-define('DB_PASSWORD', getenv('DB_PASSWORD') ?: '');
-define('DB_NAME', getenv('DB_NAME') ?: 'wildgarden_db');
+// Detectar automáticamente si está en producción (Render) o desarrollo local
+$db_host = getenv('DB_HOST');
+$db_port = getenv('DB_PORT') ?: '5432';
+$db_user = getenv('DB_USER');
+$db_password = getenv('DB_PASSWORD');
+$db_name = getenv('DB_NAME');
+
+// Si tiene credenciales de BD, usar base de datos. Si no, usar archivos JSON
+$use_database = !empty($db_host) && !empty($db_user) && !empty($db_name);
+
+define('USE_DATABASE', $use_database);
+define('DB_HOST', $db_host ?: 'localhost');
+define('DB_PORT', $db_port);
+define('DB_USER', $db_user ?: 'postgres');
+define('DB_PASSWORD', $db_password ?: '');
+define('DB_NAME', $db_name ?: 'wildgarden_db');
 
 // ============================================
 // CONFIGURACIÓN DE ARCHIVOS (alternativa a BD)
