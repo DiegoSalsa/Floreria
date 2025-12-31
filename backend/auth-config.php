@@ -149,12 +149,19 @@ function register_user($email, $name, $password) {
     if (USE_DATABASE) {
         try {
             $conn = get_db_connection();
-            if (!$conn) return ['success' => false, 'error' => 'Error de conexión a BD'];
+            if (!$conn) {
+                logActivity("Error: No hay conexión a BD en register_user", 'error');
+                return ['success' => false, 'error' => 'Error de conexión a BD'];
+            }
+            
+            // Hash de la contraseña PRIMERO
+            $password_hash = hash_password($password);
             
             // Verificar si usuario ya existe en tabla users
             $stmt = $conn->prepare("SELECT id FROM users WHERE email = :email");
             $stmt->execute([':email' => $email]);
             if ($stmt->fetch()) {
+                logActivity("Intento de registro con email duplicado: $email", 'warning');
                 return ['success' => false, 'error' => 'El email ya está registrado'];
             }
             
@@ -166,7 +173,7 @@ function register_user($email, $name, $password) {
                 VALUES (:username, :email, :name, :password_hash, :is_active, :email_verified, NOW(), NOW())
             ");
             
-            $stmt->execute([
+            $result = $stmt->execute([
                 ':username' => $username,
                 ':email' => $email,
                 ':name' => $name,
@@ -175,9 +182,16 @@ function register_user($email, $name, $password) {
                 ':email_verified' => true
             ]);
             
-            return ['success' => true, 'message' => '¡Registro exitoso! Ya puedes iniciar sesión'];
+            if ($result) {
+                logActivity("Nuevo usuario registrado: $email", 'auth');
+                return ['success' => true, 'message' => '¡Registro exitoso! Ya puedes iniciar sesión'];
+            } else {
+                logActivity("Error al insertar usuario: $email", 'error');
+                return ['success' => false, 'error' => 'Error al registrar usuario'];
+            }
         } catch (Exception $e) {
-            logActivity("Error en register_user: " . $e->getMessage(), 'error');
+            logActivity("Exception en register_user para $email: " . $e->getMessage(), 'error');
+            return ['success' => false, 'error' => 'Error al registrar usuario: ' . $e->getMessage()];
             return ['success' => false, 'error' => 'Error al registrar usuario'];
         }
     } else {
