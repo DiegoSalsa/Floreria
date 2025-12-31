@@ -59,8 +59,14 @@ try {
 
     logWebpay('Respuesta de Webpay', $response);
 
+    // Validar respuesta
+    if (!$response['response']) {
+        throw new Exception('Error al crear la transacción: ' . ($response['error'] ?: 'Sin respuesta del servidor'));
+    }
+
     if ($response['status'] !== 201 && $response['status'] !== 200) {
-        throw new Exception('Error al crear la transacción: ' . $response['error']);
+        $errorMsg = isset($response['response']['message']) ? $response['response']['message'] : 'Error desconocido';
+        throw new Exception('Error al crear la transacción: ' . $errorMsg);
     }
 
     // Guardar datos de la transacción en BD (opcional pero recomendado)

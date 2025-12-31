@@ -86,7 +86,8 @@ function makeWebpayRequest($url, $method = 'POST', $data = null, $headers = arra
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Permitir SSL sin verificación en test
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
     
     if ($method === 'POST') {
         curl_setopt($ch, CURLOPT_POST, true);
@@ -104,6 +105,23 @@ function makeWebpayRequest($url, $method = 'POST', $data = null, $headers = arra
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $error = curl_error($ch);
     curl_close($ch);
+    
+    // Debuggear respuesta
+    logWebpay('cURL Response', array(
+        'url' => $url,
+        'http_code' => $httpCode,
+        'error' => $error,
+        'response' => $response
+    ));
+    
+    // Si hay error de conexión, reportar
+    if ($error) {
+        return array(
+            'status' => 0,
+            'response' => null,
+            'error' => $error
+        );
+    }
     
     return array(
         'status' => $httpCode,

@@ -476,62 +476,59 @@ function send_purchase_confirmation($email, $name, $order_data) {
  * Enviar email genérico
  */
 function send_email($to_email, $subject, $html_body) {
-    // Usar SMTP de Brevo
-    $from_email = MAIL_FROM;
-    $from_name = MAIL_FROM_NAME;
-    $smtp_host = MAIL_HOST;
-    $smtp_port = MAIL_PORT;
-    $smtp_user = MAIL_USERNAME;
-    $smtp_pass = MAIL_PASSWORD;
+    // Usar API HTTP de Brevo (más confiable que SMTP)
+    $api_key = MAIL_USERNAME; // En Brevo, usamos el email como ID
+    $smtp_password = MAIL_PASSWORD; // Esta es la API key real
     
-    // Si no hay credenciales SMTP configuradas, loguear error
-    if (!$smtp_user || !$smtp_pass) {
-        logActivity("ERROR: Variables de SMTP no configuradas (MAIL_USERNAME, MAIL_PASSWORD)", 'error');
+    // Si no hay credenciales configuradas, loguear error
+    if (!$smtp_password) {
+        logActivity("ERROR: MAIL_PASSWORD (Brevo API Key) no configurada", 'error');
         return false;
     }
     
-    // Intentar conexión SMTP
-    try {
-        $socket = fsockopen($smtp_host, $smtp_port, $errno, $errstr, 10);
-        
-        if (!$socket) {
-            logActivity("ERROR SMTP: {$errstr} ({$errno})", 'error');
-            return false;
-        }
-        
-        // Función auxiliar para lectura/escritura
-        $send_command = function($cmd, $socket) {
-            fwrite($socket, $cmd . "\r\n");
-            return fgets($socket, 1024);
-        };
-        
-        // SMTP handshake
-        $send_command("EHLO floreria-wildgarden.onrender.com", $socket);
-        $send_command("AUTH LOGIN", $socket);
-        $send_command(base64_encode($smtp_user), $socket);
-        $send_command(base64_encode($smtp_pass), $socket);
-        $send_command("MAIL FROM: <{$from_email}>", $socket);
-        $send_command("RCPT TO: <{$to_email}>", $socket);
-        $send_command("DATA", $socket);
-        
-        // Headers
-        $headers = "From: {$from_name} <{$from_email}>\r\n";
-        $headers .= "To: {$to_email}\r\n";
-        $headers .= "Subject: {$subject}\r\n";
-        $headers .= "MIME-Version: 1.0\r\n";
-        $headers .= "Content-type: text/html; charset=UTF-8\r\n";
-        
-        // Enviar mensaje
-        fwrite($socket, $headers . "\r\n" . $html_body . "\r\n.");
-        fgets($socket, 1024);
-        
-        $send_command("QUIT", $socket);
-        fclose($socket);
-        
-        logActivity("Email enviado a: {$to_email}", 'email');
+    // Usar cURL para conectar a la API de Brevo
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://api.brevo.com/v3/smtp/email');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_POST, true);
+    
+    $headers = array(
+        'api-key: ' . $smtp_password,
+        'Content-Type: application/json'
+    );
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    
+    $data = array(
+        'to' => array(
+            array('email' => $to_email)
+        ),
+        'sender' => array(
+            'email' => MAIL_FROM,
+            'name' => MAIL_FROM_NAME
+        ),
+        'subject' => $subject,
+        'htmlContent' => $html_body
+    );
+    
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curl_error = curl_error($ch);
+    curl_close($ch);
+    
+    if ($curl_error) {
+        logActivity("ERROR cURL al enviar email a {$to_email}: {$curl_error}", 'error');
+        return false;
+    }
+    
+    if ($http_code >= 200 && $http_code < 300) {
+        logActivity("Email enviado exitosamente a: {$to_email}", 'email');
         return true;
-    } catch (Exception $e) {
-        logActivity("ERROR al enviar email a {$to_email}: " . $e->getMessage(), 'error');
+    } else {
+        logActivity("ERROR Brevo API ({$http_code}) al enviar a {$to_email}: {$response}", 'error');
         return false;
     }
 }
