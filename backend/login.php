@@ -6,28 +6,76 @@ require_once 'auth-config.php';
 $frontend_url = 'https://floreriawildgarden.vercel.app';
 $admin_url = 'https://floreria-wildgarden.onrender.com/admin-dashboard.php';
 
+// CORS headers
+header('Access-Control-Allow-Origin: https://floreriawildgarden.vercel.app');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Credentials: true');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
 if (is_authenticated()) {
-    header("Location: $frontend_url");
+    if (isset($_POST['email'])) {
+        // HTML form submitted
+        header("Location: $frontend_url");
+    } else {
+        // JSON request
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'message' => 'Ya estás autenticado']);
+    }
     exit;
 }
 
 $error = '';
+$success = false;
 
+// Handle JSON POST (from modal)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = sanitize($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
+    $content_type = $_SERVER['CONTENT_TYPE'] ?? '';
     
-    if (!$email || !$password) {
-        $error = 'Email y contraseña requeridos';
-    } else {
+    if (strpos($content_type, 'application/json') !== false) {
+        // JSON request from modal
+        header('Content-Type: application/json');
+        
+        $input = json_decode(file_get_contents('php://input'), true);
+        $email = sanitize($input['email'] ?? '');
+        $password = $input['password'] ?? '';
+        
+        if (!$email || !$password) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Email y contraseña requeridos']);
+            exit;
+        }
+        
         $result = login_user($email, $password);
         
         if ($result['success']) {
-            // Redirigir a página de redirección que guarda en localStorage
-            header('Location: auth-redirect.php');
-            exit;
+            http_response_code(200);
+            echo json_encode(['success' => true, 'message' => 'Login exitoso', 'user' => $result['user'] ?? []]);
         } else {
-            $error = $result['error'];
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => $result['error']]);
+        }
+        exit;
+    } else {
+        // HTML form
+        $email = sanitize($_POST['email'] ?? '');
+        $password = $_POST['password'] ?? '';
+        
+        if (!$email || !$password) {
+            $error = 'Email y contraseña requeridos';
+        } else {
+            $result = login_user($email, $password);
+            
+            if ($result['success']) {
+                header('Location: auth-redirect.php');
+                exit;
+            } else {
+                $error = $result['error'];
+            }
         }
     }
 }

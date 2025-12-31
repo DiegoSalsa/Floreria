@@ -97,11 +97,11 @@
                     <i class="fas fa-user-circle"></i>
                 </a>
                 <div class="user-dropdown" id="user-dropdown" style="display: none;">
-                    <a href="https://floreria-wildgarden.onrender.com/login.php">👤 Iniciar Sesión</a>
-                    <a href="https://floreria-wildgarden.onrender.com/register.php">✍️ Crear Cuenta</a>
+                    <a href="#" onclick="openLoginModal(event)">👤 Iniciar Sesión</a>
+                    <a href="#" onclick="openRegisterModal(event)">✍️ Crear Cuenta</a>
                     <hr style="margin: 5px 0;">
                     <a href="https://floreria-wildgarden.onrender.com/admin-dashboard.php" id="admin-link" style="display: none; color: #FFD700;">👑 Admin</a>
-                    <a href="https://floreria-wildgarden.onrender.com/logout.php" id="logout-btn" style="display: none;">🚪 Cerrar Sesión</a>
+                    <a href="#" onclick="logout(event)" id="logout-btn" style="display: none;">🚪 Cerrar Sesión</a>
                 </div>
             </div>
             <div class="hamburger" id="hamburger">
@@ -472,8 +472,57 @@
     <!-- Notification Container -->
     <div id="notification-container"></div>
 
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal" style="display: none;">
+        <div class="modal-content" style="width: 90%; max-width: 400px;">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <h2>Iniciar Sesión</h2>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Contraseña:</label>
+                    <input type="password" id="loginPassword" name="password" required>
+                </div>
+                <button type="submit" class="cta-button full-width">Iniciar Sesión</button>
+            </form>
+            <p style="text-align: center; margin-top: 15px;">¿No tienes cuenta? <a href="#" onclick="switchToRegister(event)" style="color: #4B6145; font-weight: bold;">Crear una</a></p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal" style="display: none;">
+        <div class="modal-content" style="width: 90%; max-width: 400px;">
+            <span class="close" onclick="closeRegisterModal()">&times;</span>
+            <h2>Crear Cuenta</h2>
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="registerName">Nombre:</label>
+                    <input type="text" id="registerName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email:</label>
+                    <input type="email" id="registerEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Contraseña:</label>
+                    <input type="password" id="registerPassword" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPhone">Teléfono:</label>
+                    <input type="tel" id="registerPhone" name="phone">
+                </div>
+                <button type="submit" class="cta-button full-width">Crear Cuenta</button>
+            </form>
+            <p style="text-align: center; margin-top: 15px;">¿Ya tienes cuenta? <a href="#" onclick="switchToLogin(event)" style="color: #4B6145; font-weight: bold;">Iniciar sesión</a></p>
+        </div>
+    </div>
+
     <script src="script.js"></script>
     <script src="cart.js"></script>
     <script src="auth-check.js"></script>
+    <script src="auth-modal.js"></script>
 </body>
 </html>

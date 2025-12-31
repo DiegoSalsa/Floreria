@@ -1,27 +1,72 @@
 <?php
+require_once 'load-env.php';
 require_once 'auth-config.php';
+
+// CORS headers
+header('Access-Control-Allow-Origin: https://floreriawildgarden.vercel.app');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Credentials: true');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = sanitize($_POST['email'] ?? '');
-    $name = sanitize($_POST['name'] ?? '');
-    $password = $_POST['password'] ?? '';
-    $password_confirm = $_POST['password_confirm'] ?? '';
+    $content_type = $_SERVER['CONTENT_TYPE'] ?? '';
     
-    // Validar
-    if (!$email || !$name || !$password) {
-        $error = 'Todos los campos son requeridos';
-    } elseif ($password !== $password_confirm) {
-        $error = 'Las contraseñas no coinciden';
-    } else {
-        $result = register_user($email, $name, $password);
+    if (strpos($content_type, 'application/json') !== false) {
+        // JSON request from modal
+        header('Content-Type: application/json');
+        
+        $input = json_decode(file_get_contents('php://input'), true);
+        $email = sanitize($input['email'] ?? '');
+        $name = sanitize($input['name'] ?? '');
+        $password = $input['password'] ?? '';
+        $phone = sanitize($input['phone'] ?? '');
+        
+        if (!$email || !$name || !$password) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Email, nombre y contraseña requeridos']);
+            exit;
+        }
+        
+        $result = register_user($email, $name, $password, $phone);
         
         if ($result['success']) {
-            $success = $result['message'];
+            // Auto-login después de registrarse
+            login_user($email, $password);
+            
+            http_response_code(200);
+            echo json_encode(['success' => true, 'message' => 'Cuenta creada exitosamente']);
         } else {
-            $error = $result['error'];
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => $result['error']]);
+        }
+        exit;
+    } else {
+        // HTML form
+        $email = sanitize($_POST['email'] ?? '');
+        $name = sanitize($_POST['name'] ?? '');
+        $password = $_POST['password'] ?? '';
+        $password_confirm = $_POST['password_confirm'] ?? '';
+        
+        if (!$email || !$name || !$password) {
+            $error = 'Todos los campos son requeridos';
+        } elseif ($password !== $password_confirm) {
+            $error = 'Las contraseñas no coinciden';
+        } else {
+            $result = register_user($email, $name, $password);
+            
+            if ($result['success']) {
+                $success = $result['message'];
+            } else {
+                $error = $result['error'];
+            }
         }
     }
 }
