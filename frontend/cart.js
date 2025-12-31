@@ -225,22 +225,20 @@ class ShoppingCart {
     // Procesar pago con Webpay
     processWebpayPayment(customerData) {
         const totals = this.getCartTotals();
-
-        // Crear el formulario para enviar a Webpay
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = 'https://floreria-wildgarden.onrender.com/api_webpay_create_transaction.php'; // Endpoint del backend
-        form.innerHTML = `
-            <input type="hidden" name="amount" value="${totals.total}">
-            <input type="hidden" name="buyEmail" value="${customerData.email}">
-            <input type="hidden" name="buyerName" value="${customerData.name}">
-            <input type="hidden" name="buyerPhone" value="${customerData.phone}">
-            <input type="hidden" name="cartItems" value='${JSON.stringify(this.items)}'>
-            <input type="hidden" name="orderId" value="${this.generateOrderId()}">
-        `;
         
-        document.body.appendChild(form);
-        form.submit();
+        // Guardar info de la orden en localStorage para referencia
+        const orderInfo = {
+            orderId: this.generateOrderId(),
+            amount: totals.total,
+            customer: customerData,
+            items: this.items,
+            timestamp: new Date().toISOString()
+        };
+        localStorage.setItem('pendingOrder', JSON.stringify(orderInfo));
+        
+        // Redirigir directamente al link de WebPay funcional
+        // El usuario completará el pago ahí y luego puede contactar para confirmar
+        window.location.href = 'https://www.webpay.cl/form-pay/197981';
     }
 
     // Generar ID de orden único
