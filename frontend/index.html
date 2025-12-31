@@ -88,6 +88,22 @@
                 <a href="#catalogo">Catálogo</a>
                 <a href="#contacto">Contacto</a>
             </nav>
+            <div class="header-actions">
+                <a href="#" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+                <a href="/login.php" class="user-menu-toggle">
+                    <i class="fas fa-user-circle"></i>
+                </a>
+                <div class="user-dropdown" id="user-dropdown" style="display: none;">
+                    <a href="/login.php">👤 Iniciar Sesión</a>
+                    <a href="/register.php">✍️ Crear Cuenta</a>
+                    <hr style="margin: 5px 0;">
+                    <a href="/login.php" id="admin-link" style="display: none; color: #FFD700;">👑 Admin</a>
+                    <a href="/logout.php" id="logout-btn" style="display: none;">🚪 Cerrar Sesión</a>
+                </div>
+            </div>
             <div class="hamburger" id="hamburger">
                 <span></span>
                 <span></span>
@@ -122,12 +138,12 @@
                     <div class="product-footer">
                         <span class="price" itemprop="price" content="23900">$23.900</span>
                         <div class="product-actions">
-                            <button class="buy-button whatsapp-btn" data-product="Mix Floral Pequeño" data-price="$23.900" aria-label="Pedir por WhatsApp">
-                                <i class="fab fa-whatsapp"></i> Pedir al local
+                            <button class="buy-button add-to-cart-btn" data-product-id="prod-001" data-product-name="Mix Floral Pequeño" data-product-price="23900" data-product-image="Rosa" aria-label="Agregar al carrito">
+                                <i class="fas fa-shopping-cart"></i> Carrito
                             </button>
-                            <a href="https://www.ubereats.com/cl/store/tienda-de-flores-wildgarden-concepcion/ML6Jen4NXVK5BjdrRGFkKw" target="_blank" class="buy-button uber-btn" aria-label="Pedir por Uber Eats">
-                                <i class="fas fa-bolt"></i> Uber Eats
-                            </a>
+                            <button class="buy-button whatsapp-btn" data-product="Mix Floral Pequeño" data-price="$23.900" aria-label="Pedir por WhatsApp">
+                                <i class="fab fa-whatsapp"></i> Local
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -144,12 +160,12 @@
                     <div class="product-footer">
                         <span class="price" itemprop="price" content="28900">$28.900</span>
                         <div class="product-actions">
-                            <button class="buy-button whatsapp-btn" data-product="Mix Floral del día (S)" data-price="$28.900" aria-label="Pedir por WhatsApp">
-                                <i class="fab fa-whatsapp"></i> Pedir al local
+                            <button class="buy-button add-to-cart-btn" data-product-id="prod-002" data-product-name="Mix Floral del día (S)" data-product-price="28900" data-product-image="Flores" aria-label="Agregar al carrito">
+                                <i class="fas fa-shopping-cart"></i> Carrito
                             </button>
-                            <a href="https://www.ubereats.com/cl/store/tienda-de-flores-wildgarden-concepcion/ML6Jen4NXVK5BjdrRGFkKw" target="_blank" class="buy-button uber-btn" aria-label="Pedir por Uber Eats">
-                                <i class="fas fa-bolt"></i> Uber Eats
-                            </a>
+                            <button class="buy-button whatsapp-btn" data-product="Mix Floral del día (S)" data-price="$28.900" aria-label="Pedir por WhatsApp">
+                                <i class="fab fa-whatsapp"></i> Local
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -166,12 +182,12 @@
                     <div class="product-footer">
                         <span class="price" itemprop="price" content="38900">$38.900</span>
                         <div class="product-actions">
-                            <button class="buy-button whatsapp-btn" data-product="Mix Floral del día (M)" data-price="$38.900" aria-label="Pedir por WhatsApp">
-                                <i class="fab fa-whatsapp"></i> Pedir al local
+                            <button class="buy-button add-to-cart-btn" data-product-id="prod-003" data-product-name="Mix Floral del día (M)" data-product-price="38900" data-product-image="Flores" aria-label="Agregar al carrito">
+                                <i class="fas fa-shopping-cart"></i> Carrito
                             </button>
-                            <a href="https://www.ubereats.com/cl/store/tienda-de-flores-wildgarden-concepcion/ML6Jen4NXVK5BjdrRGFkKw" target="_blank" class="buy-button uber-btn" aria-label="Pedir por Uber Eats">
-                                <i class="fas fa-bolt"></i> Uber Eats
-                            </a>
+                            <button class="buy-button whatsapp-btn" data-product="Mix Floral del día (M)" data-price="$38.900" aria-label="Pedir por WhatsApp">
+                                <i class="fab fa-whatsapp"></i> Local
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -188,12 +204,12 @@
                     <div class="product-footer">
                         <span class="price" itemprop="price" content="48900">$48.900</span>
                         <div class="product-actions">
-                            <button class="buy-button whatsapp-btn" data-product="Mix Floral del Día (L)" data-price="$48.900" aria-label="Pedir por WhatsApp">
-                                <i class="fab fa-whatsapp"></i> Pedir al local
+                            <button class="buy-button add-to-cart-btn" data-product-id="prod-004" data-product-name="Mix Floral del Día (L)" data-product-price="48900" data-product-image="Flores" aria-label="Agregar al carrito">
+                                <i class="fas fa-shopping-cart"></i> Carrito
                             </button>
-                            <a href="https://www.ubereats.com/cl/store/tienda-de-flores-wildgarden-concepcion/ML6Jen4NXVK5BjdrRGFkKw" target="_blank" class="buy-button uber-btn" aria-label="Pedir por Uber Eats">
-                                <i class="fas fa-bolt"></i> Uber Eats
-                            </a>
+                            <button class="buy-button whatsapp-btn" data-product="Mix Floral del Día (L)" data-price="$48.900" aria-label="Pedir por WhatsApp">
+                                <i class="fab fa-whatsapp"></i> Local
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -210,12 +226,12 @@
                     <div class="product-footer">
                         <span class="price" itemprop="price" content="58900">$58.900</span>
                         <div class="product-actions">
-                            <button class="buy-button whatsapp-btn" data-product="Mix Floral del Día (XL)" data-price="$58.900" aria-label="Pedir por WhatsApp">
-                                <i class="fab fa-whatsapp"></i> Pedir al local
+                            <button class="buy-button add-to-cart-btn" data-product-id="prod-005" data-product-name="Mix Floral del Día (XL)" data-product-price="58900" data-product-image="Flores" aria-label="Agregar al carrito">
+                                <i class="fas fa-shopping-cart"></i> Carrito
                             </button>
-                            <a href="https://www.ubereats.com/cl/store/tienda-de-flores-wildgarden-concepcion/ML6Jen4NXVK5BjdrRGFkKw" target="_blank" class="buy-button uber-btn" aria-label="Pedir por Uber Eats">
-                                <i class="fas fa-bolt"></i> Uber Eats
-                            </a>
+                            <button class="buy-button whatsapp-btn" data-product="Mix Floral del Día (XL)" data-price="$58.900" aria-label="Pedir por WhatsApp">
+                                <i class="fab fa-whatsapp"></i> Local
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -232,12 +248,12 @@
                     <div class="product-footer">
                         <span class="price" itemprop="price" content="32000">$32.000</span>
                         <div class="product-actions">
-                            <button class="buy-button whatsapp-btn" data-product="Ramo 8 Girasoles" data-price="$32.000" aria-label="Pedir por WhatsApp">
-                                <i class="fab fa-whatsapp"></i> Pedir al local
+                            <button class="buy-button add-to-cart-btn" data-product-id="prod-006" data-product-name="Ramo 8 Girasoles" data-product-price="32000" data-product-image="Flores" aria-label="Agregar al carrito">
+                                <i class="fas fa-shopping-cart"></i> Carrito
                             </button>
-                            <a href="https://www.ubereats.com/cl/store/tienda-de-flores-wildgarden-concepcion/ML6Jen4NXVK5BjdrRGFkKw" target="_blank" class="buy-button uber-btn" aria-label="Pedir por Uber Eats">
-                                <i class="fas fa-bolt"></i> Uber Eats
-                            </a>
+                            <button class="buy-button whatsapp-btn" data-product="Ramo 8 Girasoles" data-price="$32.000" aria-label="Pedir por WhatsApp">
+                                <i class="fab fa-whatsapp"></i> Local
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -366,6 +382,97 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
+    <!-- MODAL: Shopping Cart -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content cart-modal">
+            <div class="modal-header">
+                <h2>Tu Carrito de Compras</h2>
+                <button id="close-cart" class="modal-close">✕</button>
+            </div>
+            <div id="cart-items" class="cart-items">
+                <p class="empty-cart">Tu carrito está vacío</p>
+            </div>
+            <div class="modal-footer">
+                <div id="cart-summary" class="cart-summary">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span>$0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Envío:</span>
+                        <span>$0</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total:</span>
+                        <span>$0</span>
+                    </div>
+                </div>
+                <button id="checkout-btn" class="cta-button checkout-btn">Proceder al Pago</button>
+                <button class="secondary-button" onclick="cart.clearCart()">Limpiar Carrito</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Checkout Form -->
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content checkout-modal">
+            <div class="modal-header">
+                <h2>Información de Pago</h2>
+                <button class="modal-close" onclick="document.getElementById('checkout-modal').classList.remove('active')">✕</button>
+            </div>
+            <form id="checkout-form" class="checkout-form">
+                <div class="form-group">
+                    <label for="customer-name">Nombre Completo *</label>
+                    <input type="text" id="customer-name" name="name" required placeholder="Tu nombre">
+                </div>
+
+                <div class="form-group">
+                    <label for="customer-email">Email *</label>
+                    <input type="email" id="customer-email" name="email" required placeholder="tu@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="customer-phone">Teléfono *</label>
+                    <input type="tel" id="customer-phone" name="phone" required placeholder="+569 XXXXXXXX">
+                </div>
+
+                <div class="form-group">
+                    <label for="customer-address">Dirección de Envío *</label>
+                    <input type="text" id="customer-address" name="address" required placeholder="Tu dirección">
+                </div>
+
+                <div class="form-group">
+                    <label for="customer-city">Ciudad *</label>
+                    <input type="text" id="customer-city" name="city" required placeholder="Tu ciudad">
+                </div>
+
+                <div class="payment-methods">
+                    <h3>Método de Pago</h3>
+                    <label class="payment-option">
+                        <input type="radio" name="payment-method" value="webpay" checked>
+                        <span>Tarjeta de Débito/Crédito (Webpay)</span>
+                    </label>
+                    <label class="payment-option">
+                        <input type="radio" name="payment-method" value="whatsapp">
+                        <span>Transferencia Bancaria (por WhatsApp)</span>
+                    </label>
+                </div>
+
+                <div class="form-total">
+                    <span>Total a Pagar:</span>
+                    <span id="form-total">$0</span>
+                </div>
+
+                <button type="submit" class="cta-button full-width">Continuar con Pago Webpay</button>
+                <p class="payment-disclaimer">Tu información será segura. Serás redirigido a Webpay para completar el pago.</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
     <script src="script.js"></script>
+    <script src="cart.js"></script>
 </body>
 </html>

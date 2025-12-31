@@ -1,0 +1,23 @@
+# render.yaml - Configuración automática para Render
+#
+# Solo necesitas:
+# 1. Conectar repositorio en render.com
+# 2. Crear Web Service
+# 3. Seleccionar "Docker"
+# 4. Agregar variables de entorno (ver DEPLOYMENT.md)
+
+services:
+  - type: web
+    name: floreria-backend
+    runtime: docker
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: APP_URL
+        value: https://floreria-backend.onrender.com
+      - key: USE_DATABASE
+        value: "true"
+      - key: WEBPAY_ENVIRONMENT
+        value: production
+      - key: DEBUG_MODE
+        value: "false"

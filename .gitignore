@@ -1,0 +1,39 @@
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/*.log
+logs/*
+
+# Sessions
+sessions/*
+!sessions/.gitkeep
+
+# Users (solo en desarrollo)
+# users/*
+# !users/admin_demo.json
+# !users/customer_demo.json
+
+# Cache
+*.cache
+.cache/
+
+# Temporal
+*.tmp
+temp/
+
+# Node modules (si usas npm/composer)
+node_modules/
+vendor/

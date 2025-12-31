@@ -1,0 +1,11 @@
+{
+    "id": "customer_demo_001",
+    "email": "cliente@ejemplo.com",
+    "name": "Juan Cliente",
+    "password_hash": "$2y$12$R9h7cIPz0gi.URNNX3kh2OPST9/PgBkqquzi.Ee3yK7zxQa1i2aky",
+    "role": "customer",
+    "is_active": true,
+    "verification_token": null,
+    "created_at": "2025-01-02 10:30:00",
+    "updated_at": "2025-01-02 10:30:00"
+}
