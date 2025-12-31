@@ -476,21 +476,62 @@ function send_purchase_confirmation($email, $name, $order_data) {
  * Enviar email genérico
  */
 function send_email($to_email, $subject, $html_body) {
-    // Headers
-    $headers = "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type: text/html; charset=UTF-8\r\n";
-    $headers .= "From: " . MAIL_FROM_NAME . " <" . MAIL_FROM . ">\r\n";
+    // Usar SMTP de Brevo
+    $from_email = MAIL_FROM;
+    $from_name = MAIL_FROM_NAME;
+    $smtp_host = MAIL_HOST;
+    $smtp_port = MAIL_PORT;
+    $smtp_user = MAIL_USERNAME;
+    $smtp_pass = MAIL_PASSWORD;
     
-    // Usar mail() nativo de PHP (sin SMTP)
-    // En producción, usar PHPMailer o similar
+    // Si no hay credenciales SMTP configuradas, loguear error
+    if (!$smtp_user || !$smtp_pass) {
+        logActivity("ERROR: Variables de SMTP no configuradas (MAIL_USERNAME, MAIL_PASSWORD)", 'error');
+        return false;
+    }
     
-    $result = mail($to_email, $subject, $html_body, $headers);
-    
-    if ($result) {
+    // Intentar conexión SMTP
+    try {
+        $socket = fsockopen($smtp_host, $smtp_port, $errno, $errstr, 10);
+        
+        if (!$socket) {
+            logActivity("ERROR SMTP: {$errstr} ({$errno})", 'error');
+            return false;
+        }
+        
+        // Función auxiliar para lectura/escritura
+        $send_command = function($cmd, $socket) {
+            fwrite($socket, $cmd . "\r\n");
+            return fgets($socket, 1024);
+        };
+        
+        // SMTP handshake
+        $send_command("EHLO floreria-wildgarden.onrender.com", $socket);
+        $send_command("AUTH LOGIN", $socket);
+        $send_command(base64_encode($smtp_user), $socket);
+        $send_command(base64_encode($smtp_pass), $socket);
+        $send_command("MAIL FROM: <{$from_email}>", $socket);
+        $send_command("RCPT TO: <{$to_email}>", $socket);
+        $send_command("DATA", $socket);
+        
+        // Headers
+        $headers = "From: {$from_name} <{$from_email}>\r\n";
+        $headers .= "To: {$to_email}\r\n";
+        $headers .= "Subject: {$subject}\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-type: text/html; charset=UTF-8\r\n";
+        
+        // Enviar mensaje
+        fwrite($socket, $headers . "\r\n" . $html_body . "\r\n.");
+        fgets($socket, 1024);
+        
+        $send_command("QUIT", $socket);
+        fclose($socket);
+        
         logActivity("Email enviado a: {$to_email}", 'email');
         return true;
-    } else {
-        logActivity("ERROR: No se pudo enviar email a: {$to_email}", 'error');
+    } catch (Exception $e) {
+        logActivity("ERROR al enviar email a {$to_email}: " . $e->getMessage(), 'error');
         return false;
     }
 }
