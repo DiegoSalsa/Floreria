@@ -88,7 +88,8 @@ whatsappButton.addEventListener('click', (e) => {
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         const href = this.getAttribute('href');
-        if (href !== '#' && href !== '#inicio' && href !== '#catalogo' && href !== '#contacto') {
+        // Solo permitir scroll en secciones válidas
+        if (href === '#' || (href !== '#inicio' && href !== '#catalogo' && href !== '#contacto')) {
             return;
         }
         const target = document.querySelector(href);

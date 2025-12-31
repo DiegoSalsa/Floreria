@@ -54,7 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if ($result['success']) {
             http_response_code(200);
-            echo json_encode(['success' => true, 'message' => 'Login exitoso', 'user' => $result['user'] ?? []]);
+            echo json_encode([
+                'success' => true, 
+                'message' => 'Login exitoso', 
+                'token' => $result['token'] ?? '',
+                'user' => $result['user'] ?? []
+            ]);
         } else {
             http_response_code(401);
             echo json_encode(['success' => false, 'message' => $result['error']]);
