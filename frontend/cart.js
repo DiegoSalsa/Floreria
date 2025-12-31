@@ -229,7 +229,7 @@ class ShoppingCart {
         // Crear el formulario para enviar a Webpay
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = '/api/webpay/create-transaction'; // Endpoint del backend
+        form.action = 'https://floreria-wildgarden.onrender.com/api/webpay/create-transaction'; // Endpoint del backend
         form.innerHTML = `
             <input type="hidden" name="amount" value="${totals.total}">
             <input type="hidden" name="buyEmail" value="${customerData.email}">

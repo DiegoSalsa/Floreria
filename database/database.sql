@@ -1,17 +1,16 @@
 -- ============================================
 -- BASE DE DATOS PARA FLORERIA WILDGARDEN
--- Sistema de Transacciones y Órdenes
+-- PostgreSQL Schema
 -- ============================================
 
--- Crear base de datos
-CREATE DATABASE IF NOT EXISTS wildgarden_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE wildgarden_db;
+-- Crear extensiones
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============================================
 -- TABLA DE TRANSACCIONES
 -- ============================================
 CREATE TABLE IF NOT EXISTS transactions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     order_id VARCHAR(255) UNIQUE NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
     currency VARCHAR(3) DEFAULT 'CLP',
@@ -20,45 +19,45 @@ CREATE TABLE IF NOT EXISTS transactions (
     customer_phone VARCHAR(20),
     customer_address VARCHAR(500),
     customer_city VARCHAR(100),
-    status ENUM('pending', 'completed', 'failed', 'cancelled') DEFAULT 'pending',
-    cart_items JSON,
+    status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'failed', 'cancelled')),
+    cart_items JSONB,
     webpay_token VARCHAR(255),
     webpay_url VARCHAR(512),
-    payment_method ENUM('webpay', 'whatsapp', 'transfer') DEFAULT 'webpay',
+    payment_method VARCHAR(20) DEFAULT 'webpay' CHECK (payment_method IN ('webpay', 'whatsapp', 'transfer')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    INDEX idx_order_id (order_id),
-    INDEX idx_email (customer_email),
-    INDEX idx_status (status),
-    INDEX idx_created (created_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_transactions_order_id ON transactions(order_id);
+CREATE INDEX idx_transactions_email ON transactions(customer_email);
+CREATE INDEX idx_transactions_status ON transactions(status);
+CREATE INDEX idx_transactions_created ON transactions(created_at);
 
 -- ============================================
 -- TABLA DE PRODUCTOS
 -- ============================================
 CREATE TABLE IF NOT EXISTS products (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     product_id VARCHAR(50) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
     description TEXT,
     price DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(500),
     category VARCHAR(100),
-    stock INT DEFAULT -1, -- -1 = sin control de stock
+    stock INT DEFAULT -1,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    INDEX idx_product_id (product_id),
-    INDEX idx_active (is_active)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_products_product_id ON products(product_id);
+CREATE INDEX idx_products_active ON products(is_active);
 
 -- ============================================
 -- TABLA DE ITEMS DE ÓRDENES
 -- ============================================
 CREATE TABLE IF NOT EXISTS order_items (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     order_id VARCHAR(255) NOT NULL,
     product_id VARCHAR(50) NOT NULL,
     product_name VARCHAR(255) NOT NULL,
@@ -66,55 +65,56 @@ CREATE TABLE IF NOT EXISTS order_items (
     unit_price DECIMAL(10, 2) NOT NULL,
     subtotal DECIMAL(10, 2) NOT NULL,
     
-    FOREIGN KEY (order_id) REFERENCES transactions(order_id),
-    INDEX idx_order_id (order_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    CONSTRAINT fk_order_id FOREIGN KEY (order_id) REFERENCES transactions(order_id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_order_items_order_id ON order_items(order_id);
 
 -- ============================================
 -- TABLA DE LOGS
 -- ============================================
 CREATE TABLE IF NOT EXISTS logs (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    type VARCHAR(50), -- webpay, error, info, warning
+    id SERIAL PRIMARY KEY,
+    type VARCHAR(50),
     message TEXT,
-    data JSON,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    INDEX idx_type (type),
-    INDEX idx_created (created_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    data JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_logs_type ON logs(type);
+CREATE INDEX idx_logs_created ON logs(created_at);
 
 -- ============================================
 -- TABLA DE USUARIOS ADMIN
 -- ============================================
 CREATE TABLE IF NOT EXISTS admin_users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     username VARCHAR(100) UNIQUE NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    role ENUM('admin', 'moderator', 'viewer') DEFAULT 'moderator',
+    role VARCHAR(20) DEFAULT 'moderator' CHECK (role IN ('admin', 'moderator', 'viewer')),
     is_active BOOLEAN DEFAULT TRUE,
     last_login TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    INDEX idx_username (username),
-    INDEX idx_email (email),
-    INDEX idx_active (is_active)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_admin_username ON admin_users(username);
+CREATE INDEX idx_admin_email ON admin_users(email);
+CREATE INDEX idx_admin_active ON admin_users(is_active);
 
 -- ============================================
 -- TABLA DE CONFIGURACIÓN
 -- ============================================
 CREATE TABLE IF NOT EXISTS settings (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     setting_key VARCHAR(100) UNIQUE NOT NULL,
     setting_value TEXT,
     description VARCHAR(255),
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    INDEX idx_key (setting_key)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_settings_key ON settings(setting_key);
 
 -- ============================================
 -- INSERTAR DATOS INICIALES
@@ -164,7 +164,7 @@ SELECT
     SUM(amount) as total_spent
 FROM transactions
 WHERE status = 'completed'
-GROUP BY customer_email
+GROUP BY customer_email, customer_name
 ORDER BY total_spent DESC
 LIMIT 10;
 
@@ -181,93 +181,61 @@ GROUP BY oi.product_name
 ORDER BY total_sold DESC;
 
 -- ============================================
--- PROCEDIMIENTOS ALMACENADOS
+-- PROCEDIMIENTOS ALMACENADOS (PostgreSQL Functions)
 -- ============================================
 
--- Procedimiento: Obtener transacciones del mes
-DELIMITER //
-CREATE PROCEDURE get_monthly_transactions(IN p_year INT, IN p_month INT)
-BEGIN
-    SELECT * FROM transactions
-    WHERE YEAR(created_at) = p_year 
-    AND MONTH(created_at) = p_month
-    ORDER BY created_at DESC;
-END //
-DELIMITER ;
+-- Función: Obtener transacciones del mes
+CREATE OR REPLACE FUNCTION get_monthly_transactions(p_year INT, p_month INT)
+RETURNS TABLE(id INT, order_id VARCHAR, amount DECIMAL, currency VARCHAR, customer_name VARCHAR, 
+              customer_email VARCHAR, customer_phone VARCHAR, customer_address VARCHAR, customer_city VARCHAR,
+              status VARCHAR, cart_items JSONB, webpay_token VARCHAR, webpay_url VARCHAR, 
+              payment_method VARCHAR, created_at TIMESTAMP, updated_at TIMESTAMP) AS $$
+SELECT * FROM transactions
+WHERE EXTRACT(YEAR FROM created_at) = p_year 
+AND EXTRACT(MONTH FROM created_at) = p_month
+ORDER BY created_at DESC;
+$$ LANGUAGE SQL;
 
--- Procedimiento: Obtener estadísticas rápidas
-DELIMITER //
-CREATE PROCEDURE get_dashboard_stats()
-BEGIN
-    SELECT 
-        (SELECT COUNT(*) FROM transactions WHERE status = 'completed') as total_orders,
-        (SELECT SUM(amount) FROM transactions WHERE status = 'completed') as total_sales,
-        (SELECT AVG(amount) FROM transactions WHERE status = 'completed') as avg_order,
-        (SELECT COUNT(*) FROM transactions WHERE DATE(created_at) = CURDATE() AND status = 'completed') as today_orders,
-        (SELECT SUM(amount) FROM transactions WHERE DATE(created_at) = CURDATE() AND status = 'completed') as today_sales;
-END //
-DELIMITER ;
-
--- ============================================
--- CREAR ÍNDICES PARA MEJOR RENDIMIENTO
--- ============================================
-
--- Si la tabla crece mucho, estos índices ayudan
-ALTER TABLE transactions ADD FULLTEXT INDEX idx_fulltext_customer (customer_name, customer_email);
+-- Función: Obtener estadísticas rápidas
+CREATE OR REPLACE FUNCTION get_dashboard_stats()
+RETURNS TABLE(total_orders BIGINT, total_sales DECIMAL, avg_order DECIMAL, today_orders BIGINT, today_sales DECIMAL) AS $$
+SELECT 
+    (SELECT COUNT(*) FROM transactions WHERE status = 'completed')::BIGINT as total_orders,
+    (SELECT SUM(amount) FROM transactions WHERE status = 'completed') as total_sales,
+    (SELECT AVG(amount) FROM transactions WHERE status = 'completed') as avg_order,
+    (SELECT COUNT(*) FROM transactions WHERE DATE(created_at) = CURRENT_DATE AND status = 'completed')::BIGINT as today_orders,
+    (SELECT SUM(amount) FROM transactions WHERE DATE(created_at) = CURRENT_DATE AND status = 'completed') as today_sales;
+$$ LANGUAGE SQL;
 
 -- ============================================
--- INSERTAR USUARIO ADMIN (CAMBIAR CONTRASEÑA)
+-- INSERTAR DATOS INICIALES
 -- ============================================
 
--- Hash SHA256 de "admin123" - CAMBIAR EN PRODUCCIÓN
+-- Insertar productos de ejemplo (ignorar si ya existen)
+INSERT INTO products (product_id, name, description, price, category) VALUES
+('prod-001', 'Mix Floral Pequeño', 'Arreglo compacto y fresco con flores variadas', 23900, 'Arreglos'),
+('prod-002', 'Mix Floral del día (S)', 'Composición pequeña con flores frescas del día', 28900, 'Arreglos'),
+('prod-003', 'Mix Floral del día (M)', 'Arreglo mediano con variedad de flores frescas', 38900, 'Arreglos'),
+('prod-004', 'Mix Floral del Día (L)', 'Arreglo grande con flores frescas seleccionadas', 48900, 'Arreglos'),
+('prod-005', 'Mix Floral del Día (XL)', 'Arreglo extra grande con flores premium', 58900, 'Arreglos'),
+('prod-006', 'Ramo 8 Girasoles', 'Radiante ramo de 8 girasoles frescos', 32000, 'Ramos')
+ON CONFLICT DO NOTHING;
+
+-- Insertar configuración inicial (ignorar si ya existen)
+INSERT INTO settings (setting_key, setting_value, description) VALUES
+('shop_name', 'Floreria Wildgarden', 'Nombre de la tienda'),
+('shop_email', 'ventas@wildgardenflores.cl', 'Email de contacto'),
+('shop_phone', '+56996744579', 'Teléfono'),
+('shipping_cost', '5000', 'Costo de envío en pesos'),
+('currency', 'CLP', 'Moneda'),
+('webpay_environment', 'test', 'Ambiente: test o production'),
+('timezone', 'America/Santiago', 'Zona horaria')
+ON CONFLICT DO NOTHING;
+
+-- Insertar usuario admin (ignorar si ya existe)
 INSERT INTO admin_users (username, email, password_hash, role) VALUES
-('admin', 'admin@wildgardenflores.cl', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'admin');
-
--- ============================================
--- QUERIES ÚTILES
--- ============================================
-
--- Ver todas las transacciones
--- SELECT * FROM transactions ORDER BY created_at DESC;
-
--- Ver transacciones pendientes
--- SELECT * FROM transactions WHERE status = 'pending' ORDER BY created_at DESC;
-
--- Ver transacciones de hoy
--- SELECT * FROM transactions WHERE DATE(created_at) = CURDATE();
-
--- Llamar estadísticas
--- CALL get_dashboard_stats();
-
--- Ver productos más vendidos
--- SELECT * FROM top_products;
-
--- Ver mejores clientes
--- SELECT * FROM top_customers;
-
--- ============================================
--- LIMPIEZA Y MANTENIMIENTO
--- ============================================
-
--- Eliminar transacciones fallidas de más de 30 días
--- DELETE FROM transactions WHERE status = 'failed' AND created_at < DATE_SUB(NOW(), INTERVAL 30 DAY);
-
--- Optimizar tablas (ejecutar mensualmente)
--- OPTIMIZE TABLE transactions;
--- OPTIMIZE TABLE order_items;
--- OPTIMIZE TABLE logs;
-
--- ============================================
--- SEGURIDAD
--- ============================================
-
--- Crear usuario de solo lectura para reportes
--- CREATE USER 'reports_user'@'localhost' IDENTIFIED BY 'strong_password';
--- GRANT SELECT ON wildgarden_db.* TO 'reports_user'@'localhost';
-
--- Crear usuario para aplicación (lectura/escritura)
--- CREATE USER 'app_user'@'localhost' IDENTIFIED BY 'app_password';
--- GRANT SELECT, INSERT, UPDATE ON wildgarden_db.* TO 'app_user'@'localhost';
+('admin', 'admin@wildgardenflores.cl', '$2y$12$ZHEjyJUlsH.qWjlKB6MQTeh2mAWMNrCbFJVOG9RQp3b5VsVH6I0eC', 'admin')
+ON CONFLICT DO NOTHING;
 
 -- ============================================
 -- FIN DEL SCRIPT
