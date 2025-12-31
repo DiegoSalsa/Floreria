@@ -35,14 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
         
-        $result = register_user($email, $name, $password, $phone);
+        $result = register_user($email, $name, $password);
         
         if ($result['success']) {
-            // Auto-login después de registrarse
-            login_user($email, $password);
-            
             http_response_code(200);
-            echo json_encode(['success' => true, 'message' => 'Cuenta creada exitosamente']);
+            echo json_encode($result);
         } else {
             http_response_code(400);
             echo json_encode(['success' => false, 'message' => $result['error']]);

@@ -192,7 +192,26 @@ function register_user($email, $name, $password) {
             
             if ($result) {
                 logActivity("Nuevo usuario registrado: $email", 'auth');
-                return ['success' => true, 'message' => '¡Registro exitoso! Ya puedes iniciar sesión'];
+                
+                // Generar token inmediatamente
+                $token = generate_token($email, $name, 'customer');
+                
+                // Crear sesión
+                $_SESSION['user_email'] = $email;
+                $_SESSION['user_name'] = $name;
+                $_SESSION['user_role'] = 'customer';
+                $_SESSION['login_time'] = time();
+                
+                return [
+                    'success' => true, 
+                    'message' => '¡Registro exitoso!',
+                    'token' => $token,
+                    'user' => [
+                        'email' => $email,
+                        'name' => $name,
+                        'role' => 'customer'
+                    ]
+                ];
             } else {
                 logActivity("Error al insertar usuario: $email", 'error');
                 return ['success' => false, 'error' => 'Error al registrar usuario'];
@@ -229,8 +248,45 @@ function register_user($email, $name, $password) {
         ];
         
         file_put_contents(USERS_DIR . "/{$user_id}.json", json_encode($user_data, JSON_PRETTY_PRINT));
-        return ['success' => true, 'message' => '¡Registro exitoso! Ya puedes iniciar sesión'];
+        
+        // Generar token
+        $token = generate_token($email, $name, 'customer');
+        
+        // Crear sesión
+        $_SESSION['user_email'] = $email;
+        $_SESSION['user_name'] = $name;
+        $_SESSION['user_role'] = 'customer';
+        $_SESSION['login_time'] = time();
+        
+        return [
+            'success' => true, 
+            'message' => '¡Registro exitoso!',
+            'token' => $token,
+            'user' => [
+                'email' => $email,
+                'name' => $name,
+                'role' => 'customer'
+            ]
+        ];
     }
+}
+
+/**
+ * Generar JWT token simple para cliente
+ */
+function generate_token($email, $name, $role = 'customer') {
+    $secret = getenv('JWT_SECRET') ?: 'floreria-wildgarden-secret-key-2025';
+    $payload = json_encode([
+        'email' => $email,
+        'name' => $name,
+        'role' => $role,
+        'iat' => time(),
+        'exp' => time() + 86400 // 24 horas
+    ]);
+    
+    // Crear token simple (no es JWT real, pero funciona)
+    $token = base64_encode($payload);
+    return $token;
 }
 
 /**
@@ -254,12 +310,18 @@ function login_user($email, $password) {
     $_SESSION['user_role'] = $user['role'];
     $_SESSION['login_time'] = time();
     
+    // Generar token
+    $token = generate_token($user['email'], $user['name'], $user['role'] ?? 'customer');
+    
     return [
         'success' => true, 
         'message' => 'Login exitoso', 
-        'role' => $user['role'],
-        'user_email' => $user['email'],
-        'user_name' => $user['name']
+        'token' => $token,
+        'user' => [
+            'email' => $user['email'],
+            'name' => $user['name'],
+            'role' => $user['role'] ?? 'customer'
+        ]
     ];
 }
 

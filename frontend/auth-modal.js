@@ -62,16 +62,13 @@ async function handleLogin(e) {
             closeLoginModal();
             showNotification('¡Sesión iniciada correctamente!', 'success');
             
-            // Actualizar UI
-            updateAuthUI({
-                email: data.user?.email || email,
-                name: data.user?.name || '',
-                role: data.user?.role || 'customer'
-            });
+            // Actualizar UI inmediatamente
+            checkAuthFromLocalStorage();
             
+            // Opcional: recargar después
             setTimeout(() => {
                 location.reload();
-            }, 500);
+            }, 1000);
         } else {
             showNotification(data.message || 'Error al iniciar sesión', 'error');
         }
@@ -115,18 +112,15 @@ async function handleRegister(e) {
             localStorage.setItem('user_role', data.user?.role || 'customer');
             
             closeRegisterModal();
-            showNotification('¡Cuenta creada correctamente! Iniciando sesión...', 'success');
+            showNotification('¡Cuenta creada correctamente!', 'success');
             
-            // Actualizar UI
-            updateAuthUI({
-                email: data.user?.email || email,
-                name: data.user?.name || name,
-                role: data.user?.role || 'customer'
-            });
+            // Actualizar UI inmediatamente
+            checkAuthFromLocalStorage();
             
+            // Opcional: recargar después
             setTimeout(() => {
                 location.reload();
-            }, 500);
+            }, 1000);
         } else {
             showNotification(data.message || 'Error al crear cuenta', 'error');
         }
