@@ -2,24 +2,20 @@
 
 function openLoginModal(e) {
     e.preventDefault();
-    document.getElementById('loginModal').style.display = 'flex';
-    document.getElementById('loginModal').style.alignItems = 'center';
-    document.getElementById('loginModal').style.justifyContent = 'center';
+    document.getElementById('loginModal').classList.add('active');
 }
 
 function closeLoginModal() {
-    document.getElementById('loginModal').style.display = 'none';
+    document.getElementById('loginModal').classList.remove('active');
 }
 
 function openRegisterModal(e) {
     e.preventDefault();
-    document.getElementById('registerModal').style.display = 'flex';
-    document.getElementById('registerModal').style.alignItems = 'center';
-    document.getElementById('registerModal').style.justifyContent = 'center';
+    document.getElementById('registerModal').classList.add('active');
 }
 
 function closeRegisterModal() {
-    document.getElementById('registerModal').style.display = 'none';
+    document.getElementById('registerModal').classList.remove('active');
 }
 
 function switchToLogin(e) {
@@ -171,102 +167,3 @@ window.onclick = function(e) {
         closeRegisterModal();
     }
 }
-
-// Estilos para los modales
-const style = document.createElement('style');
-style.textContent = `
-.modal {
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex !important;
-}
-
-.modal-content {
-    background-color: #fefefe;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    animation: slideDown 0.3s ease-in-out;
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover {
-    color: #4B6145;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 600;
-    color: #333;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
-    box-sizing: border-box;
-}
-
-.form-group input:focus {
-    outline: none;
-    border-color: #4B6145;
-    box-shadow: 0 0 5px rgba(75, 107, 69, 0.3);
-}
-
-.full-width {
-    width: 100%;
-}
-
-@keyframes slideDown {
-    from {
-        transform: translateY(-50px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateX(400px);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-@keyframes slideOut {
-    from {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    to {
-        transform: translateX(400px);
-        opacity: 0;
-    }
-}
-`;
-document.head.appendChild(style);

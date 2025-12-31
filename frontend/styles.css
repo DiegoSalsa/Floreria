@@ -924,7 +924,8 @@ footer {
 
 .modal.active {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
+    justify-content: center;
 }
 
 @keyframes fadeIn {
