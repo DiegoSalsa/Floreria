@@ -146,18 +146,40 @@ function register_user($email, $name, $password) {
         return ['success' => false, 'error' => 'La contraseña debe tener al menos 6 caracteres'];
     }
     
-    // Verificar si usuario ya existe
     if (USE_DATABASE) {
-        $conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $stmt = $conn->prepare("SELECT id FROM admin_users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $stmt->close();
-        
-        if ($result->num_rows > 0) {
-            $conn->close();
-            return ['success' => false, 'error' => 'El email ya está registrado'];
+        try {
+            $conn = get_db_connection();
+            if (!$conn) return ['success' => false, 'error' => 'Error de conexión a BD'];
+            
+            // Verificar si usuario ya existe
+            $stmt = $conn->prepare("SELECT id FROM admin_users WHERE email = :email");
+            $stmt->execute([':email' => $email]);
+            if ($stmt->fetch()) {
+                return ['success' => false, 'error' => 'El email ya está registrado'];
+            }
+            
+            // Insertar nuevo usuario
+            $username = explode('@', $email)[0];
+            $role = 'customer';
+            $is_active = true;
+            
+            $stmt = $conn->prepare("
+                INSERT INTO admin_users (username, email, password_hash, role, is_active, created_at, updated_at)
+                VALUES (:username, :email, :password_hash, :role, :is_active, NOW(), NOW())
+            ");
+            
+            $stmt->execute([
+                ':username' => $username,
+                ':email' => $email,
+                ':password_hash' => $password_hash,
+                ':role' => $role,
+                ':is_active' => $is_active
+            ]);
+            
+            return ['success' => true, 'message' => '¡Registro exitoso! Ya puedes iniciar sesión'];
+        } catch (Exception $e) {
+            logActivity("Error en register_user: " . $e->getMessage(), 'error');
+            return ['success' => false, 'error' => 'Error al registrar usuario'];
         }
     } else {
         // Buscar en carpeta users
@@ -168,45 +190,26 @@ function register_user($email, $name, $password) {
                 return ['success' => false, 'error' => 'El email ya está registrado'];
             }
         }
-    }
-    
-    // Crear usuario
-    $user_id = uniqid('user_', true);
-    $password_hash = hash_password($password);
-    
-    $user_data = [
-        'id' => $user_id,
-        'email' => $email,
-        'name' => $name,
-        'password_hash' => $password_hash,
-        'role' => 'customer', // Por defecto cliente
-        'is_active' => true, // Activo automáticamente sin verificación
-        'verification_token' => create_session_token(),
-        'created_at' => date('Y-m-d H:i:s'),
-        'updated_at' => date('Y-m-d H:i:s')
-    ];
-    
-    if (USE_DATABASE) {
-        $conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $stmt = $conn->prepare("
-            INSERT INTO admin_users (username, email, password_hash, role, is_active, created_at)
-            VALUES (?, ?, ?, ?, ?, NOW())
-        ");
         
-        $username = explode('@', $email)[0];
-        $role = 'customer';
-        $is_active = 1;
+        // Crear usuario
+        $user_id = uniqid('user_', true);
+        $password_hash = hash_password($password);
         
-        $stmt->bind_param("ssssi", $username, $email, $password_hash, $role, $is_active);
-        $stmt->execute();
-        $conn->close();
-    } else {
+        $user_data = [
+            'id' => $user_id,
+            'email' => $email,
+            'name' => $name,
+            'password_hash' => $password_hash,
+            'role' => 'customer',
+            'is_active' => true,
+            'verification_token' => create_session_token(),
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ];
+        
         file_put_contents(USERS_DIR . "/{$user_id}.json", json_encode($user_data, JSON_PRETTY_PRINT));
+        return ['success' => true, 'message' => '¡Registro exitoso! Ya puedes iniciar sesión'];
     }
-    
-    // NO enviar email de verificación - el usuario puede iniciar sesión inmediatamente
-    
-    return ['success' => true, 'message' => '¡Registro exitoso! Ya puedes iniciar sesión'];
 }
 
 /**
@@ -238,20 +241,19 @@ function login_user($email, $password) {
  */
 function find_user_by_email($email) {
     if (USE_DATABASE) {
-        $conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $stmt = $conn->prepare("SELECT * FROM admin_users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $stmt->close();
-        
-        if ($result->num_rows > 0) {
-            $user = $result->fetch_assoc();
-            $conn->close();
-            return $user;
+        try {
+            $conn = get_db_connection();
+            if (!$conn) return null;
+            
+            $stmt = $conn->prepare("SELECT * FROM admin_users WHERE email = :email");
+            $stmt->execute([':email' => $email]);
+            $user = $stmt->fetch();
+            
+            return $user ?: null;
+        } catch (Exception $e) {
+            logActivity("Error en find_user_by_email: " . $e->getMessage(), 'error');
+            return null;
         }
-        $conn->close();
-        return null;
     } else {
         // Buscar en carpeta users
         $users = glob(USERS_DIR . '/*.json');
@@ -270,20 +272,19 @@ function find_user_by_email($email) {
  */
 function find_user_by_id($user_id) {
     if (USE_DATABASE) {
-        $conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $stmt = $conn->prepare("SELECT * FROM admin_users WHERE id = ?");
-        $stmt->bind_param("i", $user_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $stmt->close();
-        
-        if ($result->num_rows > 0) {
-            $user = $result->fetch_assoc();
-            $conn->close();
-            return $user;
+        try {
+            $conn = get_db_connection();
+            if (!$conn) return null;
+            
+            $stmt = $conn->prepare("SELECT * FROM admin_users WHERE id = :id");
+            $stmt->execute([':id' => $user_id]);
+            $user = $stmt->fetch();
+            
+            return $user ?: null;
+        } catch (Exception $e) {
+            logActivity("Error en find_user_by_id: " . $e->getMessage(), 'error');
+            return null;
         }
-        $conn->close();
-        return null;
     } else {
         $file = USERS_DIR . "/{$user_id}.json";
         if (file_exists($file)) {
