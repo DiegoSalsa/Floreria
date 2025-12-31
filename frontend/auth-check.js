@@ -1,41 +1,29 @@
 /**
- * Verificar autenticación llamando al backend
+ * Verificar autenticación desde localStorage
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    checkAuthFromBackend();
+    checkAuthFromLocalStorage();
 });
 
-// Re-verificar cuando vuelva el focus (activa pestaña)
-window.addEventListener('focus', checkAuthFromBackend);
+// Re-verificar cuando vuelva el focus
+window.addEventListener('focus', checkAuthFromLocalStorage);
 
-// Re-verificar cada 30 segundos
-setInterval(checkAuthFromBackend, 30000);
-
-async function checkAuthFromBackend() {
-    try {
-        const response = await fetch('https://floreria-wildgarden.onrender.com/check-auth.php', {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+function checkAuthFromLocalStorage() {
+    const token = localStorage.getItem('auth_token');
+    const email = localStorage.getItem('user_email');
+    const name = localStorage.getItem('user_name');
+    const role = localStorage.getItem('user_role');
+    
+    console.log('Auth check - Token:', token ? 'exists' : 'none', 'Email:', email);
+    
+    if (token && email) {
+        updateAuthUI({
+            email: email,
+            name: name || '',
+            role: role || 'customer'
         });
-        
-        const data = await response.json();
-        console.log('Backend auth response:', data);
-        
-        if (data.logged_in) {
-            updateAuthUI({
-                email: data.user_email,
-                name: data.user_name,
-                role: data.user_role
-            });
-        } else {
-            clearAuthUI();
-        }
-    } catch (error) {
-        console.error('Error checking auth:', error);
+    } else {
         clearAuthUI();
     }
 }

@@ -39,7 +39,6 @@ async function handleLogin(e) {
     try {
         const response = await fetch('https://floreria-wildgarden.onrender.com/login.php', {
             method: 'POST',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -52,10 +51,24 @@ async function handleLogin(e) {
         const data = await response.json();
         
         if (response.ok && data.success) {
+            // Guardar token en localStorage
+            if (data.token) {
+                localStorage.setItem('auth_token', data.token);
+            }
+            localStorage.setItem('user_email', data.user?.email || email);
+            localStorage.setItem('user_name', data.user?.name || '');
+            localStorage.setItem('user_role', data.user?.role || 'customer');
+            
             closeLoginModal();
-            // Mostrar notificación
             showNotification('¡Sesión iniciada correctamente!', 'success');
-            // Actualizar UI después de un pequeño delay
+            
+            // Actualizar UI
+            updateAuthUI({
+                email: data.user?.email || email,
+                name: data.user?.name || '',
+                role: data.user?.role || 'customer'
+            });
+            
             setTimeout(() => {
                 location.reload();
             }, 500);
@@ -79,7 +92,6 @@ async function handleRegister(e) {
     try {
         const response = await fetch('https://floreria-wildgarden.onrender.com/register.php', {
             method: 'POST',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -94,9 +106,24 @@ async function handleRegister(e) {
         const data = await response.json();
         
         if (response.ok && data.success) {
+            // Guardar token en localStorage
+            if (data.token) {
+                localStorage.setItem('auth_token', data.token);
+            }
+            localStorage.setItem('user_email', data.user?.email || email);
+            localStorage.setItem('user_name', data.user?.name || name);
+            localStorage.setItem('user_role', data.user?.role || 'customer');
+            
             closeRegisterModal();
             showNotification('¡Cuenta creada correctamente! Iniciando sesión...', 'success');
-            // Actualizar UI después de un pequeño delay
+            
+            // Actualizar UI
+            updateAuthUI({
+                email: data.user?.email || email,
+                name: data.user?.name || name,
+                role: data.user?.role || 'customer'
+            });
+            
             setTimeout(() => {
                 location.reload();
             }, 500);
@@ -114,11 +141,16 @@ async function logout(e) {
     
     try {
         const response = await fetch('https://floreria-wildgarden.onrender.com/logout.php', {
-            method: 'GET',
-            credentials: 'include'
+            method: 'GET'
         });
         
         if (response.ok) {
+            // Limpiar localStorage
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user_email');
+            localStorage.removeItem('user_name');
+            localStorage.removeItem('user_role');
+            
             showNotification('Sesión cerrada', 'success');
             setTimeout(() => {
                 location.reload();
