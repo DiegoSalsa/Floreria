@@ -2,11 +2,18 @@
 require_once 'load-env.php';
 require_once 'auth-config.php';
 
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+// CORS headers - especificar dominio de Vercel
+header('Access-Control-Allow-Origin: https://floreriawildgarden.vercel.app');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Credentials: true');
+header('Content-Type: application/json');
+
+// Handle preflight
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 // Verificar si hay sesión activa
 $logged_in = is_authenticated();
