@@ -254,7 +254,13 @@ function login_user($email, $password) {
     $_SESSION['user_role'] = $user['role'];
     $_SESSION['login_time'] = time();
     
-    return ['success' => true, 'message' => 'Login exitoso', 'role' => $user['role']];
+    return [
+        'success' => true, 
+        'message' => 'Login exitoso', 
+        'role' => $user['role'],
+        'user_email' => $user['email'],
+        'user_name' => $user['name']
+    ];
 }
 
 /**
