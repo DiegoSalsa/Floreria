@@ -151,29 +151,28 @@ function register_user($email, $name, $password) {
             $conn = get_db_connection();
             if (!$conn) return ['success' => false, 'error' => 'Error de conexión a BD'];
             
-            // Verificar si usuario ya existe
-            $stmt = $conn->prepare("SELECT id FROM admin_users WHERE email = :email");
+            // Verificar si usuario ya existe en tabla users
+            $stmt = $conn->prepare("SELECT id FROM users WHERE email = :email");
             $stmt->execute([':email' => $email]);
             if ($stmt->fetch()) {
                 return ['success' => false, 'error' => 'El email ya está registrado'];
             }
             
-            // Insertar nuevo usuario
+            // Insertar nuevo cliente en tabla users
             $username = explode('@', $email)[0];
-            $role = 'customer';
-            $is_active = true;
             
             $stmt = $conn->prepare("
-                INSERT INTO admin_users (username, email, password_hash, role, is_active, created_at, updated_at)
-                VALUES (:username, :email, :password_hash, :role, :is_active, NOW(), NOW())
+                INSERT INTO users (username, email, name, password_hash, is_active, email_verified, created_at, updated_at)
+                VALUES (:username, :email, :name, :password_hash, :is_active, :email_verified, NOW(), NOW())
             ");
             
             $stmt->execute([
                 ':username' => $username,
                 ':email' => $email,
+                ':name' => $name,
                 ':password_hash' => $password_hash,
-                ':role' => $role,
-                ':is_active' => $is_active
+                ':is_active' => true,
+                ':email_verified' => true
             ]);
             
             return ['success' => true, 'message' => '¡Registro exitoso! Ya puedes iniciar sesión'];
@@ -245,7 +244,18 @@ function find_user_by_email($email) {
             $conn = get_db_connection();
             if (!$conn) return null;
             
-            $stmt = $conn->prepare("SELECT * FROM admin_users WHERE email = :email");
+            // Buscar primero en admin_users
+            $stmt = $conn->prepare("SELECT *, 'admin' as type FROM admin_users WHERE email = :email");
+            $stmt->execute([':email' => $email]);
+            $user = $stmt->fetch();
+            
+            if ($user) {
+                $user['role'] = 'admin';
+                return $user;
+            }
+            
+            // Si no encontró en admin, buscar en users (clientes)
+            $stmt = $conn->prepare("SELECT *, 'customer' as role FROM users WHERE email = :email");
             $stmt->execute([':email' => $email]);
             $user = $stmt->fetch();
             
