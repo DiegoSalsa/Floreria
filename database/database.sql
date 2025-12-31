@@ -234,7 +234,7 @@ ON CONFLICT DO NOTHING;
 
 -- Insertar usuario admin (ignorar si ya existe)
 INSERT INTO admin_users (username, email, password_hash, role) VALUES
-('admin', 'admin@wildgardenflores.cl', '$2y$12$ZHEjyJUlsH.qWjlKB6MQTeh2mAWMNrCbFJVOG9RQp3b5VsVH6I0eC', 'admin')
+('admin', 'admin@wildgardenflores.cl', '$2y$12$xK6C2Gms4xWPxGr.1L4Feu0EQLrHgPLKpqLLzKQDiJFGVGDlKB3x2', 'admin')
 ON CONFLICT DO NOTHING;
 
 -- ============================================
