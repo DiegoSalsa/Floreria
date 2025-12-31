@@ -215,27 +215,6 @@ nav a:hover {
     box-shadow: 0 6px 20px rgba(241, 242, 233, 0.4);
 }
 
-.webpay-button {
-    display: inline-block;
-    background-color: var(--cream-white);
-    color: var(--moss-green);
-    padding: 1rem 2.5rem;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(241, 242, 233, 0.3);
-    border: none;
-    cursor: pointer;
-}
-
-.webpay-button:hover {
-    background-color: #E8E9DE;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(241, 242, 233, 0.4);
-}
-
 @media (max-width: 768px) {
     .hero {
         min-height: 400px;
@@ -253,8 +232,7 @@ nav a:hover {
         font-size: 1rem;
     }
 
-    .cta-button,
-    .webpay-button {
+    .cta-button {
         display: block;
         width: 100%;
         margin-right: 0;
@@ -406,17 +384,6 @@ nav a:hover {
     background-color: #20BA5A;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
-}
-
-.uber-btn {
-    background-color: #353535;
-    color: var(--white);
-}
-
-.uber-btn:hover {
-    background-color: #1a1a1a;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(53, 53, 53, 0.3);
 }
 
 @media (max-width: 768px) {
